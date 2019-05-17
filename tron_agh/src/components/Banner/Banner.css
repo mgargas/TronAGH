@@ -1,0 +1,13 @@
+@font-face {
+    font-family: "arcade";
+    src: url("../fonts/arcade.ttf");
+}
+
+.banner-wrapper{
+    font-family: 'arcade';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 32px;
+}
