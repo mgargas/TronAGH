@@ -4,8 +4,9 @@ import {Link} from 'react-router-dom';
 import './Menu.css';
 
 export default class Menu extends Component {
+
     render() {
-        return(
+        return (
             <div className="menu__items">
                 <ul>
                     <li>
@@ -20,7 +21,8 @@ export default class Menu extends Component {
                         </a>
                     </li>
                 </ul>
+
             </div>
-        );
+        )
     }
 }
