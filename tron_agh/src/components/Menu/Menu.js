@@ -1,23 +1,28 @@
 import React, {Component} from 'react';
 
 import './Menu.css';
-import {Stomp} from "@stomp/stompjs";
-import SockJS from "sockjs-client"
+//import {Stomp} from "@stomp/stompjs";
+//import SockJS from "sockjs-client"
 
 export default class Menu extends Component {
 
     constructor(props) {
         super(props);
         this.sendTo = this.sendName.bind(this);
+        this.connect();
+    }
+
+    connect() {
         let socket = new SockJS('/gs-guide-websocket');
         this.client = Stomp.over(socket);
-        this.client.connect({}, function (frame) {
-            console.log('CONNECTED!');
-            console.log('Connected: ' + frame);
-            this.client.subscribe('/topic/greetings', function (greeting) {
-                console.log('MESSAGE : '+JSON.parse(greeting.body).content);
+        this.client.connect({},
+            function (frame) {
+                console.log('CONNECTED!');
+                console.log('Connected: ' + JSON.stringify(frame));
+                this.client.subscribe('/topic/greetings', function (greeting) {
+                    console.log('MESSAGE : '+JSON.parse(greeting.body).content);
+                });
             });
-        });
     }
 
     disconnect() {
