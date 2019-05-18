@@ -28,13 +28,6 @@ export default class Menu extends Component {
         }
     }
 
-    onMessageReceive = (msg, topic) => {
-        console.log('msg = '+JSON.stringify(msg)+ ' topic = '+JSON.stringify(topic));
-        this.setState(prevState => ({
-            messages: [...prevState.messages, msg]
-        }));
-    };
-
     sendMessage() {
         try {
             this.client.send("/app/hello", {}, JSON.stringify("Hello, STOMP"));
@@ -45,16 +38,6 @@ export default class Menu extends Component {
             return false;
         }
     };
-
-    componentWillMount(){
-        // set up timer
-        this.timer = setTimeout(() => {
-            this.setState({
-                visible: true,
-            });
-            this.componentWillMount();
-        }, 1000);
-    }
 
     render() {
         return(
