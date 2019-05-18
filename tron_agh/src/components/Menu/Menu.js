@@ -1,42 +1,19 @@
 import React, {Component} from 'react';
+import SockJsClient from 'react-stomp';
 
 import './Menu.css';
-const URL = 'ws://localhost:3030';
 
 export default class Menu extends Component {
 
     sendTo() {
         console.log("send");
-        this.ws.send(JSON.stringify('TEST!'))
+        let message = "TEST!";
+        this.clientRef.sendMessage('/topics/all', message);
     }
-
-
-    webSocket = new WebSocket(URL);
 
     constructor(props) {
         super(props);
         this.sendTo = this.sendTo.bind(this);
-        this.getFrom = this.getFrom.bind(this);
-    }
-
-    componentDidMount() {
-        this.webSocket.onopen = () => {
-            // on connecting, do nothing but log it to the console
-            console.log('connected')
-        };
-
-        this.webSocket.onmessage = evt => {
-            // on receiving a message, add it to the list of messages
-            console.log('ws message = ' + JSON.parse(evt.data));
-        };
-
-        this.webSocket.onclose = () => {
-            console.log('disconnected');
-            // automatically try to reconnect on connection loss
-            this.setState({
-                ws: new WebSocket(URL),
-            })
-        };
     }
 
     render() {
@@ -56,6 +33,9 @@ export default class Menu extends Component {
                     </li>
                 </ul>
                 <button onClick={this.sendTo}>SEND</button>
+                <SockJsClient url='http://localhost:8080/ws' topics={['/topics/all']}
+                              onMessage={(msg) => { console.log(msg); }}
+                              ref={ (client) => { this.clientRef = client }} />
             </div>
         )
     }
