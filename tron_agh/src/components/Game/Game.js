@@ -6,7 +6,7 @@ import './Game.css';
 function GridCell(props) {
     const classes = `grid-cell 
   ${props.bonusCell ? "grid-cell--bonus" : ""} 
-  ${props.motorCell ? "grid-cell--motor" : ""}
+  ${props.motorCell ? "grid-cell--motor__"+props.motorCell : ""}
   `;
     return (
         <div
@@ -19,17 +19,17 @@ function GridCell(props) {
 const fakeMap = {
     players: [
         {
-            name: 'player1',
+            id: 1,
             x: 5,
             y: 6
         },
         {
-            name: 'player1',
+            id: 2,
             x: 15,
             y: 16
         },
         {
-            name: 'player1',
+            id: 3,
             x: 16,
             y: 17
         },
@@ -91,7 +91,7 @@ export default class Game extends React.Component {
     createBoard() {
         this.numCells = Math.floor(this.state.size / 15);
         this.setState(
-            {board: [...Array(this.numCells)].map(x => Array(this.numCells).fill(""))}
+            {board: [...Array(this.numCells)].map(x => Array(this.numCells).fill(0))}
         );
     }
 
@@ -100,7 +100,7 @@ export default class Game extends React.Component {
             fakeMap.players.forEach(player =>
                 this.setState(prevState => {
                     let newBoard = prevState.board;
-                    newBoard[player.x][player.y] = player.name;
+                    newBoard[player.x][player.y] = player.id;
                     return {board: newBoard}
                 })
             )}
@@ -147,7 +147,7 @@ export default class Game extends React.Component {
                 return (
                     <GridCell
                         bonusCell={false}
-                        motorCell={y !== ""}
+                        motorCell={y}
                         size={cellSize}
                         key={key}
                     />
