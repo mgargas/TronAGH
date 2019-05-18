@@ -5,21 +5,22 @@ import Banner from './components/Banner/Banner'
 
 import './App.css';
 import {Route, Switch} from "react-router-dom";
+
+import Game from './components/Game/Game';
+
 import logo from './logo.png';
 
 function App() {
   return (
-    <div className="App">
-        <header>
-            <img alt="logo" src={logo}/>
-        </header>
-      <Banner />
-      <div className="page-wrapper">
+    <div className="">
+
           <Switch>
+
               <Route exact path='/' component={Menu}/>
               <Route exact path='/home' component={Menu}/>
+              <Route to="/game" component={Game}/>
           </Switch>
-      </div>
+
     </div>
   );
 }
