@@ -32,7 +32,7 @@ export default class Menu extends Component {
     };
 
     render() {
-        const wsSourceUrl = window.location.protocol + "//" + window.location.host + "/handler";
+        const wsSourceUrl = window.location.protocol + "//" + window.location.host + "/gs-guide-websocket";
         return(
             <div className="menu__items">
                 <ul>
