@@ -33,7 +33,7 @@ export default class Menu extends Component {
                     </li>
                 </ul>
                 <button onClick={this.sendTo}>SEND</button>
-                <SockJsClient url='/gs-guide-websocket' topics={['/topic/greetings']}
+                <SockJsClient url='ws://localhost:8080/gs-guide-websocket' topics={['/topic/greetings']}
                               onMessage={(msg) => { console.log(msg); }}
                               ref={ (client) => { this.clientRef = client }} />
             </div>
