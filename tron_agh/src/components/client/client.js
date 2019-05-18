@@ -14,8 +14,6 @@ export default class Client extends Component {
         this.connect();
     }
     connect() {
-
-            
         client.connect({},
             function (frame) {
                 console.log('CONNECTED!');
@@ -36,16 +34,10 @@ export default class Client extends Component {
 
     sendName() {
         try {
-            client.send("/app/hello", {}, JSON.stringify({'name': "TEST NAME !!!"}));
+            client.send("/app/room/0", {}, JSON.stringify({'name': "TEST NAME !!!"}));
         } catch(e) {
             console.error(e);
-            alert('cannot send message on /app/hello');
+            alert('cannot send message on /app/room/0');
         }
-    }
-
-    render() {
-        return(
-            <button onClick={this.sendTo}>SEND</button>
-        );
     }
 }
