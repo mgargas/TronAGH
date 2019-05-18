@@ -1,46 +1,43 @@
 import React, {Component} from 'react';
 
 import './Menu.css';
-import * as StompJS from '@stomp/stompjs'
+import {Stomp} from "@stomp/stompjs";
+import SockJS from "sockjs-client"
 
 export default class Menu extends Component {
 
     constructor(props) {
         super(props);
-        this.sendTo = this.sendMessage.bind(this);
-        this.client = StompJS.Stomp.client('http://localhost:8080/gs-guide-websocket');
-        this.connected = false;
-        if(this.client) {
-            this.client.connect(
-                {login: 'mylogin', passcode: 'mypasscode'},
-                () => {
-                    console.log('connected');
-                    this.connected = true;
-                },
-                () => {
-                    console.log('not able to connect')
-                });
-        }
-        if(this.connected && this.client) {
-            this.client.subscribe("/topic/all", (message) => {
-                console.log('message = '+JSON.stringify(message.body));
+        this.sendTo = this.sendName.bind(this);
+        let socket = new SockJS('/gs-guide-websocket');
+        this.client = Stomp.over(socket);
+        this.client.connect({}, function (frame) {
+            console.log('CONNECTED!');
+            console.log('Connected: ' + frame);
+            this.client.subscribe('/topic/greetings', function (greeting) {
+                console.log('MESSAGE : '+JSON.parse(greeting.body).content);
             });
-        }
+        });
     }
 
-    sendMessage() {
+    disconnect() {
+        if (this.client !== null) {
+            this.client.disconnect();
+        }
+        console.log("Disconnected");
+    }
+
+    sendName() {
         try {
-            this.client.send("/app/hello", {}, JSON.stringify("Hello, STOMP"));
-            return true;
+            this.client.send("/app/hello", {}, JSON.stringify({'name': "TEST NAME !!!"}));
         } catch(e) {
             console.error(e);
             alert('cannot send message on /app/hello');
-            return false;
         }
-    };
+    }
 
     render() {
-        return(
+        return (
             <div className="menu__items">
                 <ul>
                     <li>
