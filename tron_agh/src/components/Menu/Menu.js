@@ -10,7 +10,7 @@ export default class Menu extends Component {
             <div className="menu__items">
                 <ul>
                     <li>
-                        <Link to="/game">Play</Link>
+                        <Link to="/rooms">Play</Link>
                     </li>
                     <li>
                         <a href="/results">Results</a>

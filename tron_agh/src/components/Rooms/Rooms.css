@@ -1,0 +1,11 @@
+.room__item{
+    min-width: 200px;
+    padding: 20px 40px;
+    margin: 20px 0 ;
+    border: 1px solid #fff;
+    text-align: center; 
+    color: #fff;
+  }
+  .create__button{
+    width: 100%;
+  }

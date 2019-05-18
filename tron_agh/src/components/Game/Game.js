@@ -32,7 +32,6 @@ export default class Game extends React.Component {
         super(props);
         this.state = {
             size: 500,
-            motor: [],
             board: [],
             bonus: [],
             responsePoints: [],
@@ -50,26 +49,18 @@ export default class Game extends React.Component {
         this.updateBoard = this.updateBoard.bind(this);
 
         this.sendTo = this.sendDirection.bind(this);
-        this.connect();
-        this.createRoom = this.createRoom.bind(this);
+        this.connect = this.connect.bind(this);
     }
 
     connect() {
+        console.log('connect method')
         client.connect({},
             function (frame) {
                 console.log('CONNECTED!');
-                //console.log('Connected: ' + JSON.stringify(frame));
-                //console.log(clie nt);
                 client.subscribe('/topic/room/0', 
                     function(message) {
-                    // called when the client receives a STOMP message from the server
                     if (message.body) {
                         responsePoints = JSON.parse(message.body)
-                
-                     // console.log("got message with body " + message.body)
-                    } else
-                    {
-                      console.log("got empty message");
                     }
                   });
             });
@@ -91,16 +82,15 @@ export default class Game extends React.Component {
         }
     }
 
+    componentWillMount(){
+ 
+    }
 
     componentDidMount() {
         this.createBoard();
-        
+        this.connect();
+    }
 
-    }
-    
-    createRoom() {
-        axios.post(`http://localhost:9999/room`,  { maxPlayers: 4, playersIds: [0] }, {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}}).then(res => {})
-    }
 
     setDirection({keyCode}) {
         let changeDirection = false;
@@ -109,14 +99,14 @@ export default class Game extends React.Component {
                 changeDirection = true;
             }
         });
-//
+
         if (changeDirection){ 
             switch(keyCode) {
                 case 39:
-                    this.sendDirection(-1);
+                    this.sendDirection(1);
                     break;
                 case 37:
-                    this.sendDirection(1);
+                    this.sendDirection(-1);
                     break;
             }
         }
@@ -133,12 +123,18 @@ export default class Game extends React.Component {
     updateBoard() {
         if(this.state.board.length > 30) {
             if(responsePoints !== undefined) {
+                console.log(responsePoints.playersInfo)
                 Object.values(responsePoints.playersInfo).forEach(player =>
-                    this.setState(prevState => {
+                    {
+                    let x = player.position.x, y = player.position.y
+                    x > -1 && y > -1 
+                    ? this.setState(prevState => {
                         let newBoard = prevState.board;
-                        newBoard[player.position.x][player.position.y] = player.id+1;
+                        newBoard[x][y] = player.id+1;
                         return {board: newBoard}
-                    })
+                    }) 
+                    : this.endGame()
+                    }
                 )
             }
 
@@ -154,8 +150,6 @@ export default class Game extends React.Component {
 
         this.setState({
             status: 1,
-            motor: [[5, 5], [5, 6], [5, 7]],
-
         });
         //need to focus so keydown listener will work!
         this.el.focus();
@@ -210,7 +204,7 @@ export default class Game extends React.Component {
             overlay = (
                 <div className="motor-app__overlay">
                     <div className="mb-1"><b>GAME OVER!</b></div>
-                    <div className="mb-1">Your score: {this.state.motor.length} </div>
+                    <div className="mb-1">Your score: {this.state.board.length} </div>
                     <button onClick={this.startGame}>Start a new game</button>
                 </div>
             );
@@ -236,9 +230,6 @@ export default class Game extends React.Component {
                 >
                     {cells}
                 </div>
-                <button onClick={this.createRoom}> 
-                    Create room!
-                    </button> 
             </div>
         );
     }
