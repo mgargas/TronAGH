@@ -51,6 +51,7 @@ export default class Game extends React.Component {
 
         this.sendTo = this.sendDirection.bind(this);
         this.connect();
+        this.createRoom = this.createRoom.bind(this);
     }
 
     connect() {
@@ -63,8 +64,8 @@ export default class Game extends React.Component {
                     function(message) {
                     // called when the client receives a STOMP message from the server
                     if (message.body) {
-                        responsePoints = JSON.parse(message.body.players)
-       
+                        responsePoints = JSON.parse(message.body)
+                
                      // console.log("got message with body " + message.body)
                     } else
                     {
@@ -93,10 +94,13 @@ export default class Game extends React.Component {
 
     componentDidMount() {
         this.createBoard();
-        //axios.post(`http://localhost:9999/room`,  { maxPlayers: 4, playersIds: [0] }, {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}}).then(res => {})
+        
 
     }
     
+    createRoom() {
+        axios.post(`http://localhost:9999/room`,  { maxPlayers: 4, playersIds: [0] }, {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}}).then(res => {})
+    }
 
     setDirection({keyCode}) {
         let changeDirection = false;
@@ -105,7 +109,7 @@ export default class Game extends React.Component {
                 changeDirection = true;
             }
         });
-
+//
         if (changeDirection){ 
             switch(keyCode) {
                 case 39:
@@ -129,25 +133,16 @@ export default class Game extends React.Component {
     updateBoard() {
         if(this.state.board.length > 30) {
             if(responsePoints !== undefined) {
-                console.log(responsePoints.players);
-                console.log(responsePoints.players[0]);
-                let player1 = responsePoints.players[0];
-                this.setState(prevState => {
-                    if(player1.x > -1 && player1.y > -1) {
+                Object.values(responsePoints.playersInfo).forEach(player =>
+                    this.setState(prevState => {
                         let newBoard = prevState.board;
-                        newBoard[player1.y][player1.x] = 1;
+                        newBoard[player.position.x][player.position.y] = player.id+1;
                         return {board: newBoard}
-                    }
-                })
+                    })
+                )
             }
 
-            /*responsePoints.players.forEach(player =>
-                this.setState(prevState => {
-                    let newBoard = prevState.board;
-                    newBoard[player.x][player.y] = player.id;
-                    return {board: newBoard}
-                })
-            )*/
+
         }
         
     }
@@ -187,16 +182,20 @@ export default class Game extends React.Component {
         const cellSize = this.state.size / this.numCells;
         const cellIndexes = Array.from(Array(this.numCells).keys());
         let key = 0;
+
         const cells = this.state.board.map(x => {
             return x.map(y => {
                 key++;
                 return (
+             
                     <GridCell
                         bonusCell={false}
                         motorCell={y}
                         size={cellSize}
                         key={key}
                     />
+     
+           
                 )
             })
         });
@@ -237,6 +236,9 @@ export default class Game extends React.Component {
                 >
                     {cells}
                 </div>
+                <button onClick={this.createRoom}> 
+                    Create room!
+                    </button> 
             </div>
         );
     }
