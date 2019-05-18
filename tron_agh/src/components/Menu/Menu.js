@@ -23,16 +23,17 @@ export default class Menu extends Component {
 
     sendMessage = (msg, selfMsg) => {
         try {
-            this.clientRef.sendMessage("/app/all", JSON.stringify(selfMsg));
+            this.clientRef.sendMessage("/app/hell0", JSON.stringify(selfMsg));
             return true;
         } catch(e) {
-            alert('cannot send message on /app/all');
+            console.log(e)
+            alert('cannot send message on /app/hello');
             return false;
         }
     };
 
     render() {
-        const wsSourceUrl = window.location.protocol + "//" + window.location.host + "/gs-guide-websocket";
+        const wsSourceUrl = "http://localhost:8080/gs-guide-websocket";
         return(
             <div className="menu__items">
                 <ul>
