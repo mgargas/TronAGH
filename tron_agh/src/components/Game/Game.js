@@ -2,10 +2,12 @@ import React from 'react';
 
 import './Game.css';
 
+import axios from 'axios';
+
 import {Stomp} from "@stomp/stompjs";
 import SockJS from "sockjs-client"
 
-const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+const socket = new SockJS('http://localhost:9999/gs-guide-websocket');
 const client = Stomp.over(socket);
 
 // display a single cell
@@ -22,34 +24,7 @@ function GridCell(props) {
     );
 }
 
-const fakeMap = {
-    players: [
-        {
-            id: 1,
-            x: 5,
-            y: 6
-        },
-        {
-            id: 2,
-            x: 15,
-            y: 16
-        },
-        {
-            id: 3,
-            x: 16,
-            y: 17
-        },
-    ],
-}
-const board = {
-    fields: [
-        {
-            value: 'empty',
-            x: 7,
-            y: 7,
-        }
-    ],
-}
+let responsePoints;
 
 // the main view
 export default class Game extends React.Component {
@@ -60,10 +35,11 @@ export default class Game extends React.Component {
             motor: [],
             board: [],
             bonus: [],
+            responsePoints: [],
             // 0 = not started, 1 = in progress, 2 = finished
             status: 0,
             // using keycodes to indicate direction
-            direction: 40
+            direction: 39
         };
 
 
@@ -73,7 +49,7 @@ export default class Game extends React.Component {
         this.removeTimers = this.removeTimers.bind(this);
         this.updateBoard = this.updateBoard.bind(this);
 
-        this.sendTo = this.sendName.bind(this);
+        this.sendTo = this.sendDirection.bind(this);
         this.connect();
     }
 
@@ -81,11 +57,20 @@ export default class Game extends React.Component {
         client.connect({},
             function (frame) {
                 console.log('CONNECTED!');
-                console.log('Connected: ' + JSON.stringify(frame));
-                console.log(client);
-                client.subscribe('/topic/room/0', function (greeting) {
-                    console.log('MESSAGE : '+JSON.parse(greeting.body).content);
-                });
+                //console.log('Connected: ' + JSON.stringify(frame));
+                //console.log(clie nt);
+                client.subscribe('/topic/room/0', 
+                    function(message) {
+                    // called when the client receives a STOMP message from the server
+                    if (message.body) {
+                        responsePoints = JSON.parse(message.body.players)
+       
+                     // console.log("got message with body " + message.body)
+                    } else
+                    {
+                      console.log("got empty message");
+                    }
+                  });
             });
     }
 
@@ -96,38 +81,46 @@ export default class Game extends React.Component {
         console.log("Disconnected");
     }
 
-    sendName(direction) {
+    sendDirection(direction) {
         try {
-            client.send("/app/room/0", {}, JSON.stringify({'turn': direction}));
+            client.send("/app/room/0", {}, JSON.stringify({'id': 0, 'turn': direction}));
         } catch(e) {
             console.error(e);
             alert('cannot send message on /app/room/0');
         }
     }
+
+
     componentDidMount() {
         this.createBoard();
+        //axios.post(`http://localhost:9999/room`,  { maxPlayers: 4, playersIds: [0] }, {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}}).then(res => {})
+
     }
+    
 
     setDirection({keyCode}) {
-        // if it's the same direction or simply reversing, ignore
-        let changeDirection = true;
+        let changeDirection = false;
         [[37, 39]].forEach(dir => {
-            if (dir.indexOf(this.state.direction) > -1 && dir.indexOf(keyCode) > -1) {
-                changeDirection = false;
+            if (dir.indexOf(keyCode) > -1) {
+                changeDirection = true;
             }
         });
 
-        if (changeDirection) this.setState(
-            {
-                direction: keyCode
+        if (changeDirection){ 
+            switch(keyCode) {
+                case 39:
+                    this.sendDirection(-1);
+                    break;
+                case 37:
+                    this.sendDirection(1);
+                    break;
             }
-        );
-        if(this.state.direction === 39){ this.sendName(1); console.log('right') }
-        if(this.state.direction === 37){ this.sendName(-1); console.log('left')}
+        }
+
     }
 
     createBoard() {
-        this.numCells = Math.floor(this.state.size / 15);
+        this.numCells = Math.floor(this.state.size / 10);
         this.setState(
             {board: [...Array(this.numCells)].map(x => Array(this.numCells).fill(0))}
         );
@@ -135,13 +128,28 @@ export default class Game extends React.Component {
 
     updateBoard() {
         if(this.state.board.length > 30) {
-            fakeMap.players.forEach(player =>
+            if(responsePoints !== undefined) {
+                console.log(responsePoints.players);
+                console.log(responsePoints.players[0]);
+                let player1 = responsePoints.players[0];
+                this.setState(prevState => {
+                    if(player1.x > -1 && player1.y > -1) {
+                        let newBoard = prevState.board;
+                        newBoard[player1.y][player1.x] = 1;
+                        return {board: newBoard}
+                    }
+                })
+            }
+
+            /*responsePoints.players.forEach(player =>
                 this.setState(prevState => {
                     let newBoard = prevState.board;
                     newBoard[player.x][player.y] = player.id;
                     return {board: newBoard}
                 })
-            )}
+            )*/
+        }
+        
     }
 
     startGame() {
@@ -175,7 +183,7 @@ export default class Game extends React.Component {
     }
 
     render() {
-        this.numCells = Math.floor(this.state.size / 15);
+        this.numCells = Math.floor(this.state.size / 10);
         const cellSize = this.state.size / this.numCells;
         const cellIndexes = Array.from(Array(this.numCells).keys());
         let key = 0;
