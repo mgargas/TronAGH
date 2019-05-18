@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 
 import './Menu.css';
-//import {Stomp} from "@stomp/stompjs";
-//import SockJS from "sockjs-client"
+import {Stomp} from "@stomp/stompjs";
+import SockJS from "sockjs-client"
+
+const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+const client = Stomp.over(socket);
 
 export default class Menu extends Component {
 
@@ -13,28 +16,29 @@ export default class Menu extends Component {
     }
 
     connect() {
-        let socket = new SockJS('/gs-guide-websocket');
-        this.client = Stomp.over(socket);
-        this.client.connect({},
+
+        
+        client.connect({},
             function (frame) {
                 console.log('CONNECTED!');
                 console.log('Connected: ' + JSON.stringify(frame));
-                this.client.subscribe('/topic/greetings', function (greeting) {
+                console.log(client);
+                client.subscribe('/topic/greetings', function (greeting) {
                     console.log('MESSAGE : '+JSON.parse(greeting.body).content);
                 });
             });
     }
 
     disconnect() {
-        if (this.client !== null) {
-            this.client.disconnect();
+        if (client !== null) {
+            client.disconnect();
         }
         console.log("Disconnected");
     }
 
     sendName() {
         try {
-            this.client.send("/app/hello", {}, JSON.stringify({'name': "TEST NAME !!!"}));
+            client.send("/app/hello", {}, JSON.stringify({'name': "TEST NAME !!!"}));
         } catch(e) {
             console.error(e);
             alert('cannot send message on /app/hello');
