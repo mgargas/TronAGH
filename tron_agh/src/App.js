@@ -1,16 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
+
+import Menu from './components/Menu/Menu';
+import Banner from './components/Banner/Banner'
+
 import './App.css';
 import {Route, Switch} from "react-router-dom";
-import Home from "./Home";
+import logo from './logo.png';
 
 function App() {
   return (
     <div className="App">
-        <Switch>
-          <Route exact path='/' component={Home}/>
-          <Route exact path='/home' component={Home}/>
-        </Switch>
+        <header>
+            <img alt="logo" src={logo}/>
+        </header>
+      <Banner />
+      <div className="page-wrapper">
+          <Switch>
+              <Route exact path='/' component={Menu}/>
+              <Route exact path='/home' component={Menu}/>
+          </Switch>
+      </div>
     </div>
   );
 }
