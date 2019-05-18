@@ -1,5 +1,7 @@
 .menu__items {
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @font-face {
@@ -12,7 +14,7 @@
 }
 .menu__items ul li {
     border: 4px solid #fff;
-    min-width: 140px;
+    width: 240px;
     padding: 20px 20px 10px 20px;
     margin: 20px 0;
     border-radius: 80px; 
@@ -26,6 +28,7 @@
 }
 .menu__items ul li:hover {
     background: #fff;
+    color: #282c34;
 }
 
 .menu__items ul li a:hover {
