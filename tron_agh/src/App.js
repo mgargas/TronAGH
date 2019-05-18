@@ -1,10 +1,11 @@
 import React from 'react';
 
-import Menu from './components/Menu/Menu';
-import Banner from './components/Banner/Banner'
-
 import './App.css';
 import {Route, Switch} from "react-router-dom";
+
+import Game from './components/Game/Game';
+import Home from './components/Home/Home';
+
 import logo from './logo.png';
 
 function App() {
@@ -13,11 +14,12 @@ function App() {
         <header>
             <img alt="logo" src={logo}/>
         </header>
-      <Banner />
       <div className="page-wrapper">
           <Switch>
-              <Route exact path='/' component={Menu}/>
-              <Route exact path='/home' component={Menu}/>
+
+              <Route exact path='/' component={Home}/>
+              <Route exact path='/home' component={Home}/>
+              <Route path="/game" component={Game}/>
           </Switch>
       </div>
     </div>
