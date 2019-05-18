@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 
 import './Menu.css';
 
@@ -8,7 +9,7 @@ export default class Menu extends Component {
             <div className="menu__items">
                 <ul>
                     <li>
-                        <a href="/play">Play</a>
+                        <Link to="/game">Play</Link>
                     </li>
                     <li>
                         <a href="/results">Results</a>

@@ -31,22 +31,48 @@ function shallowEquals(arr1, arr2) {
     );
   }
   
+const fakeMap = {
+    players: [
+        {   
+            x: 5,
+            y: 6
+        }, 
+        {   
+            x: 15,
+            y: 16
+        }, 
+        {   
+            x: 16,
+            y: 17
+        }, 
+    ],
+}
+const board = {
+    fields: [
+        {
+            value: 'empty',
+            x: 7,
+            y: 7,
+        }
+    ],
+}
+
   // the main view
   export default class Game extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        size: 600,
+        size: 500,
         motor: [],
+        board: null,
         bonus: [],
-        // 0 = not started, 1 = in progress, 2= finished
+        // 0 = not started, 1 = in progress, 2 = finished
         status: 0,
         // using keycodes to indicate direction
-        direction: 39
+        direction: 40
       };
   
-      this.movebonus = this.movebonus.bind(this);
-      this.checkIfAtebonus = this.checkIfAtebonus.bind(this);
+
       this.startGame = this.startGame.bind(this);
       this.endGame = this.endGame.bind(this);
       this.movemotor = this.movemotor.bind(this);
@@ -54,50 +80,59 @@ function shallowEquals(arr1, arr2) {
       this.setDirection = this.setDirection.bind(this);
       this.removeTimers = this.removeTimers.bind(this);
     }
-    // randomly place motor bonus
-    movebonus() {
-      if (this.movebonusTimeout) clearTimeout(this.movebonusTimeout)
-      const x = parseInt(Math.random() * this.numCells);
-      const y = parseInt(Math.random() * this.numCells);
-      this.setState({ bonus: [x, y] });
-      this.movebonusTimeout = setTimeout(this.movebonus, 5000)
-    }
   
     setDirection({ keyCode }) {
       // if it's the same direction or simply reversing, ignore
       let changeDirection = true;
-      [[38, 40], [37, 39]].forEach(dir => {
+      [[37, 39]].forEach(dir => {
         if (dir.indexOf(this.state.direction) > -1 && dir.indexOf(keyCode) > -1) {
           changeDirection = false;
         }
       });
   
-      if (changeDirection) this.setState({ direction: keyCode });
+      if (changeDirection) this.setState(
+          { 
+              direction: keyCode
+          }
+        );
     }
   
+    fillBoard() {
+        const newmotor = [];
+            fakeMap.players.forEach(player => {
+            newmotor[0] = [player.x, player.y];
+            }
+        );
+        
+                        
+        // now shift each "body" segment to the previous segment's position
+        [].push.apply(
+          newmotor,
+          this.state.motor.slice(0).map((s, i) => {
+            // since we're starting from the second item in the list,
+            // just use the index, which will refer to the previous item
+            // in the original list
+            return this.state.motor[i];
+          })
+        );
+    
+        this.setState({ motor: newmotor });
+    
+    }
+
     movemotor() {
+      //console.log(this.state.motor)
       const newmotor = [];
       // set in the new "head" of the motor
-      switch (this.state.direction) {
-          // down
-        case 40:
-          newmotor[0] = [this.state.motor[0][0], this.state.motor[0][1] + 1];
-          break;
-          // up
-        case 38:
-          newmotor[0] = [this.state.motor[0][0], this.state.motor[0][1] - 1];
-          break;
-          // right
-        case 39:
-          newmotor[0] = [this.state.motor[0][0] + 1, this.state.motor[0][1]];
-          break;
-          // left
-        case 37:
-          newmotor[0] = [this.state.motor[0][0] - 1, this.state.motor[0][1]];
-          break;
-                                  }
+      fakeMap.players.forEach(player => {
+        newmotor.push([player.x, player.y]);
+      }
+    );
+                       
       // now shift each "body" segment to the previous segment's position
-      [].push.apply(
+
+  
+      return this.state.motor.push.apply(
         newmotor,
         this.state.motor.slice(0).map((s, i) => {
           // since we're starting from the second item in the list,
@@ -105,9 +140,8 @@ function shallowEquals(arr1, arr2) {
           // in the original list
           return this.state.motor[i];
         })
-      );
-  
-      this.setState({ motor: newmotor });
+    );
+    this.setState({ motor: newmotor });
   
       //this.checkIfAtebonus(newmotor);
       if (!this.isValid(newmotor[0]) || !this.doesntOverlap(newmotor)) {
@@ -116,35 +150,6 @@ function shallowEquals(arr1, arr2) {
       } 
     }
   
-    checkIfAtebonus(newmotor) {
-      if (shallowEquals(newmotor[0], this.state.bonus)) return
-        // motor gets longer
-        let newmotorSegment;
-        const lastSegment = newmotor[newmotor.length - 1];
-  
-        // where should we position the new motor segment?
-        // here are some potential positions, we can choose the best looking one
-        let lastPositionOptions = [[-1, 0], [0, -1], [1, 0], [0, 1]];
-        
-        // the motor is moving along the y-axis, so try that instead
-        if ( newmotor.length > 1 ) {
-          lastPositionOptions[0] = arrayDiff(lastSegment, newmotor[newmotor.length - 2]);
-        }
-  
-        for (var i = 0; i < lastPositionOptions.length; i++) {
-          newmotorSegment = [
-            lastSegment[0] + lastPositionOptions[i][0],
-            lastSegment[1] + lastPositionOptions[i][1]
-          ];
-          if (this.isValid(newmotorSegment)) {
-            break;
-          }
-        }
-  
-        this.setState({
-          motor: newmotor.concat([newmotorSegment]),
-        });
-    }
     
     // is the cell's position inside the grid?
     isValid(cell) {
@@ -171,7 +176,8 @@ function shallowEquals(arr1, arr2) {
   
       this.setState({
         status: 1,
-        motor: [[5, 5]],
+        motor: [[5, 5], [5,6], [5,7]],
+        
       });
       //need to focus so keydown listener will work!
       this.el.focus();
