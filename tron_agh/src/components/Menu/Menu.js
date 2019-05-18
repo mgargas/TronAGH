@@ -8,7 +8,7 @@ export default class Menu extends Component {
     sendTo() {
         console.log("send");
         let message = "TEST!";
-        this.clientRef.sendMessage('/topics/all', message);
+        this.clientRef.sendMessage('/app/hello', message);
     }
 
     constructor(props) {
@@ -33,7 +33,7 @@ export default class Menu extends Component {
                     </li>
                 </ul>
                 <button onClick={this.sendTo}>SEND</button>
-                <SockJsClient url='http://localhost:8080/ws' topics={['/topics/all']}
+                <SockJsClient url='http://localhost:8080/ws' topics={['/topics/greetings']}
                               onMessage={(msg) => { console.log(msg); }}
                               ref={ (client) => { this.clientRef = client }} />
             </div>
