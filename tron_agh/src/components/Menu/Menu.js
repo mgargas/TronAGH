@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 
 import './Menu.css';
+import ClientStateService from "../../services/ClientStateService";
 
 export default class Menu extends Component {
 
@@ -20,7 +21,7 @@ export default class Menu extends Component {
                             Credits
                         </a>
                     </li>
-                    <li>
+                    <li onClick={() => ClientStateService.clientName = ClientStateService.clientPasswordHash = null}>
                         <a href="/">
                             Logout
                         </a>
