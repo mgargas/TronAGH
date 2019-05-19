@@ -8,6 +8,7 @@ import Home from './components/Home/Home';
 import Rooms from './components/Rooms/Rooms';
 
 import logo from './logo.png';
+import LoginPage from "./components/LoginPage/LoginPage";
 
 function App() {
   return (
@@ -17,8 +18,7 @@ function App() {
         </header>
       <div className="page-wrapper">
           <Switch>
-
-              <Route exact path='/' component={Home}/>
+              <Route exact path='/' component={LoginPage}/>
               <Route exact path='/home' component={Home}/>
               <Route path="/rooms" component={Rooms}/>
               <Route path="/game" component={Game}/>
