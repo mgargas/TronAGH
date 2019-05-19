@@ -82,7 +82,9 @@ export default class Home extends React.Component {
                         className="start__button"
                         type="submit"
                         disabled={room.creatorId === myId}>
-                        Start Game!
+                        <Link to="/game">
+                          Start Game!
+                        </Link>
                     </button>
                 </form>
             </div>

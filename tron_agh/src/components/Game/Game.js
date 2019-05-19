@@ -2,8 +2,6 @@ import React from 'react';
 
 import './Game.css';
 
-import axios from 'axios';
-
 import {Stomp} from "@stomp/stompjs";
 import SockJS from "sockjs-client"
 
@@ -204,8 +202,10 @@ export default class Game extends React.Component {
             overlay = (
                 <div className="motor-app__overlay">
                     <div className="mb-1"><b>GAME OVER!</b></div>
-                    <div className="mb-1">Your score: {this.state.board.length} </div>
-                    <button className="button__game" onClick={this.startGame}>Start a new game</button>
+                    <div className="mb-1">Your score: {Infinity} </div>
+                    <button className="button__game" onClick={this.startGame}>
+                            Start a new game
+                    </button>
                 </div>
             );
         }
