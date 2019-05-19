@@ -3,13 +3,13 @@ import React from 'react';
 import './Game.css';
 
 import {withRouter} from "react-router-dom";
-import { client } from "../Rooms/Rooms";
+import {client} from "../Rooms/Rooms";
 
 // display a single cell
 function GridCell(props) {
     const classes = `grid-cell 
   ${props.bonusCell ? "grid-cell--bonus" : ""} 
-  ${props.motorCell ? "grid-cell--motor__"+props.motorCell : ""}
+  ${props.motorCell ? "grid-cell--motor__" + props.motorCell : ""}
   `;
     return (
         <div
@@ -29,7 +29,6 @@ class Game extends React.Component {
             size: 500,
             board: [],
             bonus: [],
-            responsePoints: [],
             // 0 = not started, 1 = in progress, 2 = finished
             status: 0,
             // using keycodes to indicate direction
@@ -67,8 +66,11 @@ class Game extends React.Component {
 
     sendDirection(direction) {
         try {
-            client.send('/app/room/' + this.props.location.state.id, {}, JSON.stringify({'id': this.props.location.state.playerId, 'turn': direction}));
-        } catch(e) {
+            client.send('/app/room/' + this.props.location.state.id, {}, JSON.stringify({
+                'id': this.props.location.state.playerId,
+                'turn': direction
+            }));
+        } catch (e) {
             console.error(e);
             alert('cannot send message on /app/room/0');
         }
@@ -81,7 +83,7 @@ class Game extends React.Component {
         this.movemotorInterval = setInterval(this.updateBoard, 30);
         //need to focus so keydown listener will work!
         this.el.focus();
-        this.setState({status: 1 });
+        this.setState({status: 1});
     }
 
 
@@ -93,8 +95,8 @@ class Game extends React.Component {
             }
         });
 
-        if (changeDirection){
-            switch(keyCode) {
+        if (changeDirection) {
+            switch (keyCode) {
                 case 39:
                     this.sendDirection(1);
                     break;
@@ -114,30 +116,25 @@ class Game extends React.Component {
     }
 
     updateBoard() {
-        if(this.state.board.length > 30) {
-            if(responsePoints !== undefined) {
-                if (responsePoints.gameOver) {
-                    if(responsePoints.winnerId === this.props.location.state.playerId) {
-                        this.endGame(3);
-                    } else {
-                        this.endGame(2);
-                    }
+        if (responsePoints !== undefined) {
+            if (responsePoints.gameOver) {
+                if (responsePoints.winnerId === this.props.location.state.playerId) {
+                    this.endGame(3);
+                } else {
+                    this.endGame(2);
                 }
-                Object.values(responsePoints.playersInfo).forEach(player =>
-                    {
-                    let x = player.position.x, y = player.position.y
-                    x > -1 && y > -1
-                    ? this.setState(prevState => {
-                        let newBoard = prevState.board;
-                        newBoard[x][y] = player.id+1;
-                        return {board: newBoard}
-                    })
-                    : this.endGame()
-                    }
-                )
             }
-
-
+            Object.values(responsePoints.playersInfo).forEach(player => {
+                    let x = player.position.x, y = player.position.y
+                    x > -1 && y > -1 && x < 50 && y < 50
+                        ? this.setState(prevState => {
+                            let newBoard = prevState.board;
+                            newBoard[x][y] = player.id + 1;
+                            return {board: newBoard}
+                        })
+                        : this.endGame()
+                }
+            )
         }
 
     }
