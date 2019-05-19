@@ -15,7 +15,12 @@ export default class Results extends Component {
     }
 
     componentWillMount(){
-        this.setState( {scores: [{name:"test", wins:3},{name:"test1", wins:4},{name:"tes2", wins:5}] });
+        axios.get(host+'/accounts/')
+            .then(res => console.log('result = '+JSON.stringify(res)));
+
+        let res = [{name:"test", wins:3},{name:"test1", wins:124},{name:"tes2", wins:5}];
+        res.sort((a,b) => b.wins - a.wins);
+        this.setState({scores: res});
     }
 
     renderTableData() {
