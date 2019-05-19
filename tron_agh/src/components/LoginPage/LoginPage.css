@@ -15,7 +15,7 @@
 }
 
 .Login .buttons-panel {
-    padding-top: 20px;
+    padding-top: 100px;
     width: 280px;
     position: absolute;
 }
@@ -33,4 +33,13 @@
 .Login .buttons-panel .register-button {
     float: right;
     position: relative;
+}
+
+.Login .error-message {
+    width: 280px;
+}
+
+.Login .error-message span {
+    padding-top: 20px;
+    color: red;
 }

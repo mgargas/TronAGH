@@ -15,16 +15,20 @@ export default class LoginPage extends React.Component {
 
         this.state = {
             login: "",
-            password: ""
+            password: "",
+            loginError: ""
         };
     }
-
     handleLogin(event) {
         event.preventDefault();
         axios.get(host+'/accounts/'+this.state.login+'/'+this.state.password)
             .then(res => {
                 if(res.data) {
                     this.props.history.push("/home");
+                } else {
+                    this.setState({
+                        loginError: "Wrong login/password or You don't have account",
+                    });
                 }
             })
     };
@@ -37,12 +41,19 @@ export default class LoginPage extends React.Component {
             .then(res => {
                 if(res.data) {
                     this.props.history.push("/home");
+                } else {
+                    this.setState({
+                        loginError: "Wrong login/password or You don't have account",
+                    });
                 }
             })
     };
 
 
     handleChange = event => {
+        this.setState({
+            loginError: null
+        });
         this.setState({
             [event.target.id]: event.target.value
         });
@@ -55,7 +66,7 @@ export default class LoginPage extends React.Component {
     render(){
         return (
             <div className="Login">
-                <Form onSubmit={this.handleSubmit}>
+                <Form>
                     <Form.Group controlId="login">
                         <Form.Control
                             autoFocus
@@ -81,6 +92,11 @@ export default class LoginPage extends React.Component {
                             onClick={this.handleRegister}
                             className="register-button"
                             disabled={!this.validateForm()}>REGISTER</Button>
+                    </div>
+                    <div className="error-message">
+                    {this.state.loginError && (
+                        <span>{this.state.loginError}</span>
+                    )}
                     </div>
                 </Form>
             </div>
