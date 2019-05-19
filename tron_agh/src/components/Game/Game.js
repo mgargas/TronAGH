@@ -197,7 +197,7 @@ export default class Game extends React.Component {
         if (this.state.status === 0) {
             overlay = (
                 <div className="motor-app__overlay">
-                    <button onClick={this.startGame}>Start game!</button>
+                    <button className="button__game" onClick={this.startGame}>Start game!</button>
                 </div>
             );
         } else if (this.state.status === 2) {
@@ -205,7 +205,7 @@ export default class Game extends React.Component {
                 <div className="motor-app__overlay">
                     <div className="mb-1"><b>GAME OVER!</b></div>
                     <div className="mb-1">Your score: {this.state.board.length} </div>
-                    <button onClick={this.startGame}>Start a new game</button>
+                    <button className="button__game" onClick={this.startGame}>Start a new game</button>
                 </div>
             );
         }
