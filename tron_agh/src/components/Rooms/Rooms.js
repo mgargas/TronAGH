@@ -59,12 +59,15 @@ export default class Home extends React.Component {
   startGame = (room, event) => {
       event.preventDefault();
       const data = {maxPlayers: room.maxPlayers, id: room.id, minPlayers: room.minPlayers, playersIds: room.playersIds, readyToStart: true, creatorId: room.creatorId};
-      axios.put(server_adress+`/room/`+room.id, data,
-          {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
-          .then( res => {
-              this.setState({ redirect: true, redirectId: room.id });
-              console.log(this.state);
-          })
+      if (room.creatorId === myId) {
+          axios.put(server_adress + `/room/` + room.id, data,
+              {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
+              .then(res => {
+                  this.setState({redirect: true, redirectId: room.id});
+              })
+      } else {
+          this.setState({redirect: true, redirectId: room.id});
+      }
   };
 
   generateRooms = () => {
@@ -91,8 +94,8 @@ export default class Home extends React.Component {
                     <button
                         className="start__button"
                         type="submit"
-                        disabled={room.creatorId !== myId || room.readyToStart}>
-                        Start Game!
+                    >
+                        {room.creatorId === myId ? 'Start Game!' : 'JoinGame'}
                     </button>
                 </form>
             </div>
