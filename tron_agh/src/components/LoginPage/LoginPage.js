@@ -24,16 +24,7 @@ export default class LoginPage extends React.Component {
     handleLogin(event) {
         event.preventDefault();
         axios.get(host+'/accounts/'+this.state.login+'/'+this.hashString(this.state.password))
-            .then(res => {
-                this.setError(null);
-                if(res.data) {
-                    ClientStateService.clientName = this.state.login;
-                    ClientStateService.clientPasswordHash = this.hashString(this.state.password);
-                    this.props.history.push("/home");
-                } else {
-                    this.setError("Wrong login/password or You don't have account");
-                }
-            })
+            .then(res => this.onLogin(res));
     };
 
     handleRegister(event) {
@@ -41,24 +32,23 @@ export default class LoginPage extends React.Component {
         axios.post(host+'/accounts/',
                 {username: this.state.login,
                  password: this.hashString(this.state.password)})
-            .then(res => {
-                this.setError(null);
-                if(res.data) {
-                    ClientStateService.clientName = this.state.login;
-                    ClientStateService.clientPasswordHash = this.hashString(this.state.password);
-                    this.props.history.push("/home");
-                } else {
-                    this.setState({
-                        loginError: "Wrong login/password or You don't have account",
-                    });
-                }
-            })
+            .then(res => this.onLogin(res));
     };
 
+    onLogin(response) {
+        console.log('result = '+JSON.stringify(response));
+        this.setError(null);
+        if(response.data) {
+            ClientStateService.clientName = this.state.login;
+            ClientStateService.clientPasswordHash = this.hashString(this.state.password);
+            this.props.history.push("/home");
+        } else {
+            this.setError("Wrong login/password or You don't have an account");
+        }
+    }
+
     setError(errorText) {
-        this.setState({
-            loginError: errorText,
-        });
+        this.setState( {loginError: errorText });
     }
 
     handleChange = event => {
