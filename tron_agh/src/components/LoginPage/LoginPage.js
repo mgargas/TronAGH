@@ -1,15 +1,11 @@
 import React from 'react';
+import axios from 'axios';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import './LoginPage.css';
 
 
-//  login    : accounts/username/password
-//  register : accounts/
-// {
-//     username :
-//     password :
-// }
+const host = 'http://localhost:9999';
 export default class LoginPage extends React.Component {
 
     constructor(props) {
@@ -25,20 +21,26 @@ export default class LoginPage extends React.Component {
 
     handleLogin(event) {
         event.preventDefault();
-        console.log('login = '+this.state.login);
-        console.log('password = '+this.state.password);
-
-        // if ok :
-        this.props.history.push("/home")
+        axios.get(host+'/accounts/'+this.state.login+'/'+this.state.password)
+            .then(res => {
+                console.log('result = '+JSON.stringify(res));
+                if(res) {
+                    this.props.history.push("/home");
+                }
+            })
     };
 
     handleRegister(event) {
         event.preventDefault();
-        console.log('login = '+this.state.login);
-        console.log('password = '+this.state.password);
-
-        // if ok :
-        this.props.history.push("/home")
+        axios.post(host+'/accounts/',
+                {username: this.state.login,
+                 password: this.state.password})
+            .then(res => {
+                console.log('result = '+JSON.stringify(res));
+                if(res) {
+                    this.props.history.push("/home");
+                }
+            })
     };
 
 
