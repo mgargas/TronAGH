@@ -58,10 +58,7 @@ class Game extends React.Component {
     }
 
     disconnect() {
-        if (client !== null) {
-            client.disconnect();
-        }
-        console.log("Disconnected");
+        client.unsubscribe();
     }
 
     sendDirection(direction) {
@@ -117,10 +114,9 @@ class Game extends React.Component {
             if(responsePoints !== undefined) {
                 if (responsePoints.isGameOver) {
                     if(responsePoints.winnerId === this.props.location.state.playerId) {
-                        this.removeTimers();
-                        this.setState({ status: 3 });
+                        this.endGame(3);
                     } else {
-                        this.endGame();
+                        this.endGame(2);
                     }
                 }
                 Object.values(responsePoints.playersInfo).forEach(player =>
@@ -146,10 +142,11 @@ class Game extends React.Component {
 
     }
 
-    endGame() {
+    endGame(gameStatus) {
+        client.unsubscribe();
         this.removeTimers();
         this.setState({
-            status: 2
+            status: gameStatus,
         })
     }
 
