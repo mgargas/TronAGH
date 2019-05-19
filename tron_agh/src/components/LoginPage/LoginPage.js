@@ -14,6 +14,8 @@ export default class LoginPage extends React.Component {
 
     constructor(props) {
         super(props);
+        this.handleLogin = this.handleLogin.bind(this);
+        this.handleRegister = this.handleRegister.bind(this);
 
         this.state = {
             login: "",
@@ -21,7 +23,7 @@ export default class LoginPage extends React.Component {
         };
     }
 
-    handleSubmit = event => {
+    handleLogin(event) {
         event.preventDefault();
         console.log('login = '+this.state.login);
         console.log('password = '+this.state.password);
@@ -29,6 +31,16 @@ export default class LoginPage extends React.Component {
         // if ok :
         this.props.history.push("/home")
     };
+
+    handleRegister(event) {
+        event.preventDefault();
+        console.log('login = '+this.state.login);
+        console.log('password = '+this.state.password);
+
+        // if ok :
+        this.props.history.push("/home")
+    };
+
 
     handleChange = event => {
         this.setState({
@@ -62,13 +74,13 @@ export default class LoginPage extends React.Component {
                         <Button
                             block
                             className="login-button"
-                            disabled={!this.validateForm()}
-                            type="submit">LOGIN</Button>
+                            onClick={this.handleLogin}
+                            disabled={!this.validateForm()}>LOGIN</Button>
                         <Button
                             block
+                            onClick={this.handleRegister}
                             className="register-button"
-                            disabled={!this.validateForm()}
-                            type="submit">REGISTER</Button>
+                            disabled={!this.validateForm()}>REGISTER</Button>
                     </div>
                 </Form>
             </div>
