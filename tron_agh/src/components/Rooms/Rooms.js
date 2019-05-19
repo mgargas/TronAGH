@@ -38,7 +38,7 @@ export default class Home extends React.Component {
   joinRoom = (room, event) => {
       event.preventDefault();
       room.playersIds.push(myId);
-      const data = {maxPlayers: room.maxPlayers, id: room.id, minPlayers: room.minPlayers, playersIds: room.playersIds};
+      const data = {maxPlayers: room.maxPlayers, id: room.id, minPlayers: room.minPlayers, playersIds: room.playersIds, creatorId: room.creatorId, readyToStart: room.readyToStart};
       axios.put(server_adress+`/room/`+room.id, data,
           {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
           .then( res => {
@@ -48,7 +48,7 @@ export default class Home extends React.Component {
 
   startGame = (room, event) => {
       event.preventDefault();
-      const data = {maxPlayers: room.maxPlayers, id: room.id, minPlayers: room.minPlayers, playersIds: room.playersIds, readyToStart: true};
+      const data = {maxPlayers: room.maxPlayers, id: room.id, minPlayers: room.minPlayers, playersIds: room.playersIds, readyToStart: true, creatorId: room.creatorId};
       axios.put(server_adress+`/room/`+room.id, data,
           {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
           .then( res => {
@@ -81,7 +81,7 @@ export default class Home extends React.Component {
                     <button
                         className="start__button"
                         type="submit"
-                        disabled={room.creatorId === myId}>
+                        disabled={room.creatorId !== myId || room.readyToStart}>
                         Start Game!
                     </button>
                 </form>
@@ -93,7 +93,7 @@ export default class Home extends React.Component {
   render(){
     let rooms = this.state.rooms ? this.generateRooms() : null;
     return (
-    <div className="container">
+    <div>
         {rooms}
 
         <form onSubmit={this.handlePostSubmit}>
