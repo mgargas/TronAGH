@@ -46,6 +46,10 @@ class Game extends React.Component {
         this.connect = this.connect.bind(this);
     }
 
+    // componentWillUnmount() {
+    //     client.unsubscribe('/topic/room/' + this.props.location.state.id);
+    // }
+
     connect() {
         if (this.props.location.state.id !== null) {
             client.subscribe('/topic/room/' + this.props.location.state.id,
@@ -112,7 +116,7 @@ class Game extends React.Component {
     updateBoard() {
         if(this.state.board.length > 30) {
             if(responsePoints !== undefined) {
-                if (responsePoints.isGameOver) {
+                if (responsePoints.gameOver) {
                     if(responsePoints.winnerId === this.props.location.state.playerId) {
                         this.endGame(3);
                     } else {
@@ -143,20 +147,17 @@ class Game extends React.Component {
     }
 
     endGame(gameStatus) {
-        client.unsubscribe();
-        this.removeTimers();
-        this.setState({
-            status: gameStatus,
-        })
+        if (gameStatus) {
+            this.removeTimers();
+            this.setState({
+                status: gameStatus,
+            });
+        }
     }
 
     removeTimers() {
         if (this.movemotorInterval) clearInterval(this.movemotorInterval);
         if (this.movebonusTimeout) clearTimeout(this.movebonusTimeout)
-    }
-
-    componentWillUnmount() {
-        this.removeTimers();
     }
 
     render() {

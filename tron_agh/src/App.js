@@ -15,7 +15,7 @@ function App() {
         <header>
             <img alt="logo" src={logo}/>
         </header>
-      <div className="page-wrapper">7
+      <div className="page-wrapper">
           <Switch>
 
               <Route exact path='/' component={Home}/>
