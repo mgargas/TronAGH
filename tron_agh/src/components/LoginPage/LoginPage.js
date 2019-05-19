@@ -3,6 +3,7 @@ import axios from 'axios';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import './LoginPage.css';
+import ClientStateService from "../../services/ClientStateService";
 
 
 const host = 'http://192.168.43.218:9999';
@@ -19,16 +20,18 @@ export default class LoginPage extends React.Component {
             loginError: ""
         };
     }
+
     handleLogin(event) {
         event.preventDefault();
         axios.get(host+'/accounts/'+this.state.login+'/'+this.hashString(this.state.password))
             .then(res => {
+                this.setError(null);
                 if(res.data) {
+                    ClientStateService.clientName = this.state.login;
+                    ClientStateService.clientPasswordHash = this.hashString(this.state.password);
                     this.props.history.push("/home");
                 } else {
-                    this.setState({
-                        loginError: "Wrong login/password or You don't have account",
-                    });
+                    this.setError("Wrong login/password or You don't have account");
                 }
             })
     };
@@ -39,7 +42,10 @@ export default class LoginPage extends React.Component {
                 {username: this.state.login,
                  password: this.hashString(this.state.password)})
             .then(res => {
+                this.setError(null);
                 if(res.data) {
+                    ClientStateService.clientName = this.state.login;
+                    ClientStateService.clientPasswordHash = this.hashString(this.state.password);
                     this.props.history.push("/home");
                 } else {
                     this.setState({
@@ -49,11 +55,14 @@ export default class LoginPage extends React.Component {
             })
     };
 
+    setError(errorText) {
+        this.setState({
+            loginError: errorText,
+        });
+    }
 
     handleChange = event => {
-        this.setState({
-            loginError: null
-        });
+        this.setError(null);
         this.setState({
             [event.target.id]: event.target.value
         });
