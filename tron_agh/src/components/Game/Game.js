@@ -115,6 +115,9 @@ class Game extends React.Component {
     updateBoard() {
         if(this.state.board.length > 30) {
             if(responsePoints !== undefined) {
+                if (responsePoints.isGameOver) {
+                    this.endGame();
+                }
                 Object.values(responsePoints.playersInfo).forEach(player =>
                     {
                     let x = player.position.x, y = player.position.y
@@ -193,6 +196,7 @@ class Game extends React.Component {
                     </button>
                 </div>
             );
+            this.props.history.push(`/rooms`);
         }
         return (
             <div
