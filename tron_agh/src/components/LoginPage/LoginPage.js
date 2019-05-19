@@ -21,7 +21,7 @@ export default class LoginPage extends React.Component {
     }
     handleLogin(event) {
         event.preventDefault();
-        axios.get(host+'/accounts/'+this.state.login+'/'+this.state.password)
+        axios.get(host+'/accounts/'+this.state.login+'/'+this.hashString(this.state.password))
             .then(res => {
                 if(res.data) {
                     this.props.history.push("/home");
@@ -37,7 +37,7 @@ export default class LoginPage extends React.Component {
         event.preventDefault();
         axios.post(host+'/accounts/',
                 {username: this.state.login,
-                 password: this.state.password})
+                 password: this.hashString(this.state.password)})
             .then(res => {
                 if(res.data) {
                     this.props.history.push("/home");
@@ -62,6 +62,10 @@ export default class LoginPage extends React.Component {
     validateForm() {
         return this.state.login.length > 0 && this.state.password.length > 0;
     }
+
+    hashString = s => {
+        return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0).toString();
+    };
 
     render(){
         return (
