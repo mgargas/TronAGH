@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button'
 import './LoginPage.css';
 
 
-const host = 'http://localhost:9999';
+const host = 'http://192.168.43.218:9999';
 export default class LoginPage extends React.Component {
 
     constructor(props) {
@@ -23,8 +23,7 @@ export default class LoginPage extends React.Component {
         event.preventDefault();
         axios.get(host+'/accounts/'+this.state.login+'/'+this.state.password)
             .then(res => {
-                console.log('result = '+JSON.stringify(res));
-                if(res) {
+                if(res.data) {
                     this.props.history.push("/home");
                 }
             })
@@ -36,8 +35,7 @@ export default class LoginPage extends React.Component {
                 {username: this.state.login,
                  password: this.state.password})
             .then(res => {
-                console.log('result = '+JSON.stringify(res));
-                if(res) {
+                if(res.data) {
                     this.props.history.push("/home");
                 }
             })
