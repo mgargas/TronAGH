@@ -116,7 +116,7 @@ class Game extends React.Component {
         if(this.state.board.length > 30) {
             if(responsePoints !== undefined) {
                 if (responsePoints.isGameOver) {
-                    if(responsePoints.winnerId) {
+                    if(responsePoints.winnerId === this.props.location.state.playerId) {
                         this.removeTimers();
                         this.setState({ status: 3 });
                     } else {
