@@ -6,6 +6,7 @@ import {Route, Switch} from "react-router-dom";
 import Game from './components/Game/Game';
 import Home from './components/Home/Home';
 import Rooms from './components/Rooms/Rooms';
+import Results from './components/Results/Results';
 
 import logo from './logo.png';
 import LoginPage from "./components/LoginPage/LoginPage";
@@ -20,6 +21,7 @@ function App() {
           <Switch>
               <Route exact path='/' component={LoginPage}/>
               <Route exact path='/home' component={Home}/>
+              <Route exact path='/results' component={Results}/>
               <Route path="/rooms" component={Rooms}/>
               <Route path="/game" component={Game}/>
           </Switch>

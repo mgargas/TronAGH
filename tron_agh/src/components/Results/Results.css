@@ -1,0 +1,26 @@
+tr  {
+    font-size: 40px;
+}
+
+.results-table {
+    width: 600px;
+}
+
+table {
+    width: 100%;
+}
+
+td.name {
+    width: 75%;
+}
+
+td.wins {
+    width: 25%;
+}
+
+.back-button {
+    margin-top: 50px;
+    background-color: #6e81fa;
+    border: none;
+    float: left;
+}
