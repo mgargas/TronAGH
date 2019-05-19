@@ -39,6 +39,7 @@ export default class LoginPage extends React.Component {
         console.log('result = '+JSON.stringify(response));
         this.setError(null);
         if(response.data) {
+            ClientStateService.clientId = response.data.playerId;
             ClientStateService.clientName = this.state.login;
             ClientStateService.clientPasswordHash = this.hashString(this.state.password);
             this.props.history.push("/home");
