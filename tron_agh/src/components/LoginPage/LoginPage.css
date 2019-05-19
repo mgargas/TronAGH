@@ -20,9 +20,15 @@
     position: absolute;
 }
 
-.Login .buttons-panel button{
-    background-color: #6e81fa;
-    border: none;
+.Login .buttons-panel button {
+    margin-top: 20px;
+    color: #fff;
+    background-color: #00c8d5;
+    border-radius: 3px;
+    border: 1px solid #00c8d5;
+    cursor: pointer;
+    padding: .75rem;
+    margin-bottom: 0.5rem;
 }
 
 .Login .buttons-panel .login-button {
@@ -36,7 +42,7 @@
 }
 
 .Login .error-message {
-    width: 280px;
+    width: 400px;
 }
 
 .Login .error-message span {
