@@ -1,0 +1,36 @@
+.Login {
+    padding: 60px 0;
+}
+
+.Login .form-group {
+    padding: 15px;
+    height: 80px;
+    width: 280px;
+}
+
+.Login .form-group input {
+    width: 100%;
+    height: 100%;
+    font-size:24px;
+}
+
+.Login .buttons-panel {
+    padding-top: 20px;
+    width: 280px;
+    position: absolute;
+}
+
+.Login .buttons-panel button{
+    background-color: #6e81fa;
+    border: none;
+}
+
+.Login .buttons-panel .login-button {
+    float: left;
+    position: relative;
+}
+
+.Login .buttons-panel .register-button {
+    float: right;
+    position: relative;
+}

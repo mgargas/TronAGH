@@ -1,7 +1,15 @@
 import React from 'react';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import './LoginPage.css';
 
+
+//  login    : accounts/username/password
+//  register : accounts/
+// {
+//     username :
+//     password :
+// }
 export default class LoginPage extends React.Component {
 
     constructor(props) {
@@ -47,14 +55,18 @@ export default class LoginPage extends React.Component {
                             type="password"
                         />
                     </Form.Group>
-                    <Button
-                        block
-                        disabled={!this.validateForm()}
-                        type="submit">Login</Button>
-                    <Button
-                        block
-                        disabled={!this.validateForm()}
-                        type="submit">Register</Button>
+                    <div className="buttons-panel">
+                        <Button
+                            block
+                            className="login-button"
+                            disabled={!this.validateForm()}
+                            type="submit">LOGIN</Button>
+                        <Button
+                            block
+                            className="register-button"
+                            disabled={!this.validateForm()}
+                            type="submit">REGISTER</Button>
+                    </div>
                 </Form>
             </div>
         )};
