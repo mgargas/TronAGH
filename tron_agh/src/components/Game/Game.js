@@ -2,11 +2,8 @@ import React from 'react';
 
 import './Game.css';
 
-import {Stomp} from "@stomp/stompjs";
-import SockJS from "sockjs-client"
-
-const socket = new SockJS('http://localhost:9999/gs-guide-websocket');
-const client = Stomp.over(socket);
+import {withRouter} from "react-router-dom";
+import { client } from "../Rooms/Rooms";
 
 // display a single cell
 function GridCell(props) {
@@ -25,7 +22,7 @@ function GridCell(props) {
 let responsePoints;
 
 // the main view
-export default class Game extends React.Component {
+class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,9 +33,8 @@ export default class Game extends React.Component {
             // 0 = not started, 1 = in progress, 2 = finished
             status: 0,
             // using keycodes to indicate direction
-            direction: 39
+            direction: 39,
         };
-
 
         this.startGame = this.startGame.bind(this);
         this.endGame = this.endGame.bind(this);
@@ -51,17 +47,14 @@ export default class Game extends React.Component {
     }
 
     connect() {
-        console.log('connect method')
-        client.connect({},
-            function (frame) {
-                console.log('CONNECTED!');
-                client.subscribe('/topic/room/0', 
-                    function(message) {
+        if (this.props.location.state.id !== null) {
+            client.subscribe('/topic/room/' + this.props.location.state.id,
+                function (message) {
                     if (message.body) {
                         responsePoints = JSON.parse(message.body)
                     }
-                  });
-            });
+                });
+        }
     }
 
     disconnect() {
@@ -73,20 +66,21 @@ export default class Game extends React.Component {
 
     sendDirection(direction) {
         try {
-            client.send("/app/room/0", {}, JSON.stringify({'id': 0, 'turn': direction}));
+            client.send('/app/room/' + this.props.location.state.id, {}, JSON.stringify({'id': 3, 'turn': direction}));
         } catch(e) {
             console.error(e);
             alert('cannot send message on /app/room/0');
         }
     }
 
-    componentWillMount(){
- 
-    }
-
     componentDidMount() {
-        this.createBoard();
         this.connect();
+        this.createBoard();
+        this.removeTimers();
+        this.movemotorInterval = setInterval(this.updateBoard, 130);
+        //need to focus so keydown listener will work!
+        this.el.focus();
+        this.setState({status: 1 });
     }
 
 
@@ -98,7 +92,7 @@ export default class Game extends React.Component {
             }
         });
 
-        if (changeDirection){ 
+        if (changeDirection){
             switch(keyCode) {
                 case 39:
                     this.sendDirection(1);
@@ -121,16 +115,15 @@ export default class Game extends React.Component {
     updateBoard() {
         if(this.state.board.length > 30) {
             if(responsePoints !== undefined) {
-                console.log(responsePoints.playersInfo)
                 Object.values(responsePoints.playersInfo).forEach(player =>
                     {
                     let x = player.position.x, y = player.position.y
-                    x > -1 && y > -1 
+                    x > -1 && y > -1
                     ? this.setState(prevState => {
                         let newBoard = prevState.board;
                         newBoard[x][y] = player.id+1;
                         return {board: newBoard}
-                    }) 
+                    })
                     : this.endGame()
                     }
                 )
@@ -138,19 +131,11 @@ export default class Game extends React.Component {
 
 
         }
-        
+
     }
 
     startGame() {
-        this.removeTimers();
-        this.movemotorInterval = setInterval(this.updateBoard, 130);
 
-
-        this.setState({
-            status: 1,
-        });
-        //need to focus so keydown listener will work!
-        this.el.focus();
     }
 
     endGame() {
@@ -179,15 +164,15 @@ export default class Game extends React.Component {
             return x.map(y => {
                 key++;
                 return (
-             
+
                     <GridCell
                         bonusCell={false}
                         motorCell={y}
                         size={cellSize}
                         key={key}
                     />
-     
-           
+
+
                 )
             })
         });
@@ -235,3 +220,4 @@ export default class Game extends React.Component {
     }
 }
 
+export default withRouter(Game);

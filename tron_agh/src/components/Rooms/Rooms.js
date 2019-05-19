@@ -1,8 +1,14 @@
 import React from 'react';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 
 import './Rooms.css';
+
+import {Stomp} from "@stomp/stompjs";
+import SockJS from "sockjs-client"
+
+const socket = new SockJS('http://192.168.43.73:9999/gs-guide-websocket');
+export const client = Stomp.over(socket);
 
 const server_adress = 'http://192.168.43.73:9999';
 const myId = 3;
@@ -12,7 +18,11 @@ export default class Home extends React.Component {
       super(props);
       this.state = {
         rooms: [],
+        redirect: false,
+        redirectId: null,
       }
+
+      client.connect({}, function(){ return });
   }
 
   componentDidMount() {
@@ -52,7 +62,8 @@ export default class Home extends React.Component {
       axios.put(server_adress+`/room/`+room.id, data,
           {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
           .then( res => {
-              this.setState( { rooms: res.data });
+              this.setState({ redirect: true, redirectId: room.id });
+              console.log(this.state);
           })
   };
 
@@ -60,7 +71,6 @@ export default class Home extends React.Component {
     let keys = Object.keys(this.state.rooms);
     return keys.map((item, index) => {
         let room = this.state.rooms[item];
-        console.log(room);
         return (
             <div
                 className='room__item'
@@ -82,9 +92,7 @@ export default class Home extends React.Component {
                         className="start__button"
                         type="submit"
                         disabled={room.creatorId !== myId || room.readyToStart}>
-                        <Link to="/game">
-                          Start Game!
-                        </Link>
+                        Start Game!
                     </button>
                 </form>
             </div>
@@ -94,6 +102,12 @@ export default class Home extends React.Component {
 
   render(){
     let rooms = this.state.rooms ? this.generateRooms() : null;
+      if (this.state.redirect) {
+          return <Redirect to={{
+              pathname: '/game',
+              state: {id: this.state.redirectId, playerId: myId},
+          }}/>
+      }
     return (
     <div>
         {rooms}
