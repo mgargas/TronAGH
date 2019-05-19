@@ -77,7 +77,7 @@ class Game extends React.Component {
         this.connect();
         this.createBoard();
         this.removeTimers();
-        this.movemotorInterval = setInterval(this.updateBoard, 130);
+        this.movemotorInterval = setInterval(this.updateBoard, 30);
         //need to focus so keydown listener will work!
         this.el.focus();
         this.setState({status: 1 });
@@ -116,7 +116,12 @@ class Game extends React.Component {
         if(this.state.board.length > 30) {
             if(responsePoints !== undefined) {
                 if (responsePoints.isGameOver) {
-                    this.endGame();
+                    if(responsePoints.winnerId) {
+                        this.removeTimers();
+                        this.setState({ status: 3 });
+                    } else {
+                        this.endGame();
+                    }
                 }
                 Object.values(responsePoints.playersInfo).forEach(player =>
                     {
@@ -190,13 +195,22 @@ class Game extends React.Component {
             overlay = (
                 <div className="motor-app__overlay">
                     <div className="mb-1"><b>GAME OVER!</b></div>
-                    <div className="mb-1">Your score: {Infinity} </div>
-                    <button className="button__game" onClick={this.startGame}>
-                            Start a new game
-                    </button>
+                    {/*<div className="mb-1">Your score: {Infinity} </div>*/}
                 </div>
             );
-            this.props.history.push(`/rooms`);
+            setTimeout(() => {
+                this.props.history.push(`/rooms`);
+            }, 3000);
+        } else if (this.state.status === 3) {
+            overlay = (
+                <div className="motor-app__overlay">
+                    <div className="mb-1"><b>You Won!</b></div>
+                    {/*<div className="mb-1">Your score: {Infinity} </div>*/}
+                </div>
+            );
+            setTimeout(() => {
+                this.props.history.push(`/rooms`);
+            }, 3000);
         }
         return (
             <div
