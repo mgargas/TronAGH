@@ -9,6 +9,7 @@ import SockJS from "sockjs-client"
 
 const socket = new SockJS('http://192.168.43.73:9999/gs-guide-websocket');
 export const client = Stomp.over(socket);
+client.debug = () => {};
 
 const server_adress = 'http://192.168.43.73:9999';
 const myId = 3;
@@ -95,7 +96,7 @@ export default class Home extends React.Component {
                         className="start__button"
                         type="submit"
                     >
-                        {room.creatorId === myId ? 'Start Game!' : 'JoinGame'}
+                        {room.creatorId === myId ? 'Start Game!' : 'Join Game'}
                     </button>
                 </form>
             </div>
@@ -104,6 +105,9 @@ export default class Home extends React.Component {
   }
 
   render(){
+      setTimeout(function () {
+          this.handleRefresh();
+      }.bind(this), 2000)
     let rooms = this.state.rooms ? this.generateRooms() : null;
       if (this.state.redirect) {
           return <Redirect to={{
