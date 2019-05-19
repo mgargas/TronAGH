@@ -5,7 +5,7 @@
 .Login .form-group {
     padding: 15px;
     height: 80px;
-    width: 280px;
+    width: 400px;
 }
 
 .Login .form-group input {
@@ -16,7 +16,7 @@
 
 .Login .buttons-panel {
     padding-top: 100px;
-    width: 280px;
+    width: 400px;
     position: absolute;
 }
 

@@ -16,8 +16,11 @@ export default class Results extends Component {
 
     componentWillMount(){
         axios.get(host+'/accounts/')
-            .then(res => console.log('result = '+JSON.stringify(res)));
+            .then(res => {
+                console.log('result = '+JSON.stringify(res))
+            });
 
+        // TODO : move it to
         let res = [{name:"test", wins:3},{name:"test1", wins:124},{name:"tes2", wins:5}];
         res.sort((a,b) => b.wins - a.wins);
         this.setState({scores: res});
