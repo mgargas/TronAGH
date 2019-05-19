@@ -25,6 +25,9 @@ export default class LoginPage extends React.Component {
         event.preventDefault();
         console.log('login = '+this.state.login);
         console.log('password = '+this.state.password);
+
+        // if ok :
+        this.props.history.push("/home")
     };
 
     handleChange = event => {
