@@ -4,6 +4,9 @@ import {Link} from 'react-router-dom';
 
 import './Rooms.css';
 
+const server_adress = 'http://192.168.43.73:9999';
+const myId = 3;
+
 export default class Home extends React.Component {
   constructor(props) {
       super(props);
@@ -13,7 +16,7 @@ export default class Home extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`http://localhost:9999/room`)
+    axios.get(server_adress+`/room`)
     .then(res => {
       this.setState({ rooms: res.data });
     })
@@ -22,36 +25,75 @@ export default class Home extends React.Component {
   handlePostSubmit = event => {
     event.preventDefault();
 
-    axios.post(`http://localhost:9999/room`,  { maxPlayers: 4, playersIds: [0] }, {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}}).then(res => {})
+    axios.post(server_adress+`/room`,  { maxPlayers: 4, creatorId: myId }, {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}}).then(res => {})
   }
 
   handleRefresh() {
-    axios.get(`http://localhost:9999/room`)
+    axios.get(server_adress+`/room`)
     .then(res => {
       this.setState({ rooms: res.data });
     })
   }
 
+  joinRoom = (room, event) => {
+      event.preventDefault();
+      room.playersIds.push(myId);
+      const data = {maxPlayers: room.maxPlayers, id: room.id, minPlayers: room.minPlayers, playersIds: room.playersIds};
+      axios.put(server_adress+`/room/`+room.id, data,
+          {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
+          .then( res => {
+              this.setState( { rooms: res.data });
+          })
+  };
+
+  startGame = (room, event) => {
+      event.preventDefault();
+      const data = {maxPlayers: room.maxPlayers, id: room.id, minPlayers: room.minPlayers, playersIds: room.playersIds, readyToStart: true};
+      axios.put(server_adress+`/room/`+room.id, data,
+          {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
+          .then( res => {
+              this.setState( { rooms: res.data });
+          })
+  };
+
   generateRooms = () => {
     let keys = Object.keys(this.state.rooms);
-    return keys.map( (item, index) => (
-        <div 
-            className='room__item' 
-            key={ index } 
-          >
-            <Link to="/game">
-                <h1>Room{this.state.rooms[item].id} (0/{this.state.rooms[item].maxPlayers})</h1>
-            </Link>
-            
-        </div>    
-    )
+    return keys.map((item, index) => {
+        let room = this.state.rooms[item];
+        console.log(room);
+        return (
+            <div
+                className='room__item'
+                key={index}
+            >
+                <Link to="/game">
+                    <h1>Room{room.id} ({room.playersIds.length}/{room.maxPlayers})</h1>
+                </Link>
+                <form onSubmit={(e) => this.joinRoom(room, e)}>
+                    <button
+                        className="join__button"
+                        type="submit"
+                        disabled={room.maxPlayers === room.playersIds.length}>
+                        Join
+                    </button>
+                </form>
+                <form onSubmit={(e) => this.startGame(room, e)}>
+                    <button
+                        className="start__button"
+                        type="submit"
+                        disabled={room.creatorId === myId}>
+                        Start Game!
+                    </button>
+                </form>
+            </div>
+        )}
 );
   }
 
   render(){
     let rooms = this.state.rooms ? this.generateRooms() : null;
     return (
-    <div>
+    <div className="container">
         {rooms}
 
         <form onSubmit={this.handlePostSubmit}>
@@ -61,6 +103,6 @@ export default class Home extends React.Component {
           <button className="create__button" type="submit">Refresh</button>
         </form>
     </div>
-    
+
   )};
 }
