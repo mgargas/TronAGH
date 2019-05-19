@@ -17,21 +17,20 @@ export default class Results extends Component {
     componentWillMount(){
         axios.get(host+'/accounts/')
             .then(res => {
-                console.log('result = '+JSON.stringify(res))
+                if(res.data) {
+                    let scores = res.data;
+                    scores.sort((a,b) => b.wins - a.wins);
+                    this.setState({scores: scores});
+                }
             });
-
-        // TODO : move it to
-        let res = [{name:"test", wins:3},{name:"test1", wins:124},{name:"tes2", wins:5}];
-        res.sort((a,b) => b.wins - a.wins);
-        this.setState({scores: res});
     }
 
     renderTableData() {
         return this.state.scores.map((user) => {
-            const { name, wins } = user;
+            const { username, wins } = user;
             return (
-                <tr key={name}>
-                    <td className="name">{name}</td>
+                <tr key={username}>
+                    <td className="name">{username}</td>
                     <td className="wins">{wins}</td>
                 </tr>
             )
