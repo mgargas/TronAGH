@@ -66,7 +66,7 @@ class Game extends React.Component {
 
     sendDirection(direction) {
         try {
-            client.send('/app/room/' + this.props.location.state.id, {}, JSON.stringify({'id': 3, 'turn': direction}));
+            client.send('/app/room/' + this.props.location.state.id, {}, JSON.stringify({'id': this.props.location.state.playerId, 'turn': direction}));
         } catch(e) {
             console.error(e);
             alert('cannot send message on /app/room/0');
