@@ -19,7 +19,7 @@ function GridCell(props) {
     );
 }
 
-let responsePoints;
+//let responsePoints;
 
 // the main view
 class Game extends React.Component {
@@ -35,7 +35,7 @@ class Game extends React.Component {
             direction: 39,
         };
 
-        this.startGame = this.startGame.bind(this);
+        
         this.endGame = this.endGame.bind(this);
         this.setDirection = this.setDirection.bind(this);
         this.removeTimers = this.removeTimers.bind(this);
@@ -50,12 +50,15 @@ class Game extends React.Component {
     // }
 
     connect() {
+        var that = this;
         if (this.props.location.state.id !== null) {
             client.subscribe('/topic/room/' + this.props.location.state.id,
                 function (message) {
-                    console.log(message);
+                    //console.log(message);
                     if (message.body) {
-                        responsePoints = JSON.parse(message.body)
+                        //console.log(message);
+                        //responsePoints = JSON.parse(message.body)
+                        that.updateBoard(JSON.parse(message.body));
                     }
                 });
         }
@@ -80,8 +83,8 @@ class Game extends React.Component {
     componentDidMount() {
         this.connect();
         this.createBoard();
-        this.removeTimers();
-        this.movemotorInterval = setInterval(this.updateBoard, 30);
+        //this.removeTimers();
+        //this.movemotorInterval = setInterval(this.updateBoard, 30);
         //need to focus so keydown listener will work!
         this.el.focus();
         this.setState({status: 1});
@@ -116,8 +119,10 @@ class Game extends React.Component {
         );
     }
 
-    updateBoard() {
+    updateBoard(responsePoints) {
+        
         if (responsePoints !== undefined) {
+            
             if (responsePoints.gameOver) {
                 if (responsePoints.winnerId === this.props.location.state.playerId) {
                     this.endGame(3);
@@ -140,10 +145,6 @@ class Game extends React.Component {
 
     }
 
-    startGame() {
-
-    }
-
     endGame(gameStatus) {
         client.unsubscribe();
         if (gameStatus) {
@@ -155,11 +156,12 @@ class Game extends React.Component {
     }
 
     removeTimers() {
-        if (this.movemotorInterval) clearInterval(this.movemotorInterval);
-        if (this.movebonusTimeout) clearTimeout(this.movebonusTimeout)
+        //if (this.movemotorInterval) clearInterval(this.movemotorInterval);
+        //if (this.movebonusTimeout) clearTimeout(this.movebonusTimeout)
     }
 
     render() {
+        
         this.numCells = Math.floor(this.state.size / 10);
         const cellSize = this.state.size / this.numCells;
         const cellIndexes = Array.from(Array(this.numCells).keys());
