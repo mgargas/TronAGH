@@ -143,7 +143,7 @@ class Game extends React.Component {
             }
 
             Object.values(responsePoints.playersInfo).forEach(player => {
-                    document.getElementById(player.position.x+","+player.position.y).style="background-color: #ddd" 
+                    document.getElementById(player.position.x+","+player.position.y).classList.add("grid-cell--motor__"+player.id) 
                 }
             )
         }
