@@ -20,6 +20,14 @@
     border-left: 1px solid lightgray;
     border-bottom: 1px solid lightgray;
   }
+
+  .game-cell {
+    width: 10px;
+    height: 10px;
+    border-left: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+  }
+
   .grid-cell--bonus {
     background-color: blue;
   }

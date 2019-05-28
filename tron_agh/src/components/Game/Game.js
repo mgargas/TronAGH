@@ -19,14 +19,16 @@ function GridCell(props) {
     );
 }
 
-//let responsePoints;
+
+
+let responsePoints;
 
 // the main view
 class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            size: 1000,
+            size: 500,
             board: [],
             bonus: [],
             // 0 = not started, 1 = in progress, 2 = finished
@@ -43,12 +45,28 @@ class Game extends React.Component {
 
         this.sendTo = this.sendDirection.bind(this);
         this.connect = this.connect.bind(this);
+    
+        let numCells = 50;
+        let local_board = [...Array(numCells)].map(x => Array(numCells).fill(0));
+     
+        const cellSize = 500 / numCells;
+        let i = 0, j=0;
+        this.cells = local_board.map(x => {
+            i++; j=0;
+            return x.map(y => {
+                j++;
+                return (
+                    <div className="game-cell" id={i+","+j}></div>
+                )
+            })
+        });
     }
 
     // componentWillUnmount() {
     //     client.unsubscribe('/topic/room/' + this.props.location.state.id);
     // }
 
+    
     connect() {
         var that = this;
         if (this.props.location.state.id !== null) {
@@ -59,6 +77,7 @@ class Game extends React.Component {
                         //console.log(message);
                         //responsePoints = JSON.parse(message.body)
                         that.updateBoard(JSON.parse(message.body));
+                        responsePoints = JSON.parse(message.body)
                     }
                 });
         }
@@ -82,7 +101,7 @@ class Game extends React.Component {
 
     componentDidMount() {
         this.connect();
-        this.createBoard();
+        //this.createBoard();
         //this.removeTimers();
         //this.movemotorInterval = setInterval(this.updateBoard, 30);
         //need to focus so keydown listener will work!
@@ -112,16 +131,9 @@ class Game extends React.Component {
 
     }
 
-    createBoard() {
-        this.numCells = Math.floor(this.state.size / 10);
-        this.setState(
-            {board: [...Array(this.numCells)].map(x => Array(this.numCells).fill(0))}
-        );
-    }
 
     updateBoard(responsePoints) {
-
-        if (responsePoints !== undefined) {
+       if (responsePoints !== undefined) {
             if (responsePoints.gameOver) {
                 if (responsePoints.winnerId === this.props.location.state.playerId) {
                     this.endGame(3);
@@ -129,15 +141,11 @@ class Game extends React.Component {
                     this.endGame(2);
                 }
             }
-            let newBoard = this.state.board;
+
             Object.values(responsePoints.playersInfo).forEach(player => {
-                    let x = player.position.x, y = player.position.y;
-                    if (x > -1 && y > -1) {
-                        newBoard[x][y] = player.id + 1;
-                    }
+                    document.getElementById(player.position.x+","+player.position.y).style="background-color: #ddd" 
                 }
             )
-            this.setState({board: newBoard})
         }
 
     }
@@ -157,29 +165,7 @@ class Game extends React.Component {
         //if (this.movebonusTimeout) clearTimeout(this.movebonusTimeout)
     }
 
-    render() {
-
-        this.numCells = Math.floor(this.state.size / 10);
-        const cellSize = this.state.size / this.numCells;
-        const cellIndexes = Array.from(Array(this.numCells).keys());
-        let key = 0;
-
-        const cells = this.state.board.map(x => {
-            return x.map(y => {
-                key++;
-                return (
-
-                    <GridCell
-                        bonusCell={false}
-                        motorCell={y}
-                        size={cellSize}
-                        key={key}
-                    />
-
-
-                )
-            })
-        });
+    render() {    
         let overlay;
         if (this.state.status === 0) {
             overlay = (
@@ -227,7 +213,7 @@ class Game extends React.Component {
                         height: this.state.size + "px"
                     }}
                 >
-                    {cells}
+                    {this.cells}
                 </div>
             </div>
         );
