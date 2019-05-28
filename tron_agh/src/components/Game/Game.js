@@ -122,7 +122,6 @@ class Game extends React.Component {
     updateBoard(responsePoints) {
 
         if (responsePoints !== undefined) {
-            console.log(responsePoints);
             if (responsePoints.gameOver) {
                 if (responsePoints.winnerId === this.props.location.state.playerId) {
                     this.endGame(3);
