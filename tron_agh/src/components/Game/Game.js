@@ -53,6 +53,7 @@ class Game extends React.Component {
         if (this.props.location.state.id !== null) {
             client.subscribe('/topic/room/' + this.props.location.state.id,
                 function (message) {
+                    console.log(message);
                     if (message.body) {
                         responsePoints = JSON.parse(message.body)
                     }
@@ -132,7 +133,7 @@ class Game extends React.Component {
                             newBoard[x][y] = player.id + 1;
                             return {board: newBoard}
                         })
-                        : this.endGame()
+                        : this.endGame(2)
                 }
             )
         }
@@ -144,6 +145,7 @@ class Game extends React.Component {
     }
 
     endGame(gameStatus) {
+        client.unsubscribe();
         if (gameStatus) {
             this.removeTimers();
             this.setState({

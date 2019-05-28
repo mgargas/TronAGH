@@ -9,11 +9,11 @@ import SockJS from "sockjs-client"
 
 const socket = new SockJS('http://192.168.43.73:9999/gs-guide-websocket');
 export const client = Stomp.over(socket);
-client.debug = () => {
-};
+// client.debug = () => {
+// };
 
 const server_adress = 'http://192.168.43.73:9999';
-const myId = 3;
+const myId = 2;
 
 export default class Home extends React.Component {
     constructor(props) {
