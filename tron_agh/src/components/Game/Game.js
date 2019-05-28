@@ -35,7 +35,7 @@ class Game extends React.Component {
             direction: 39,
         };
 
-        
+
         this.endGame = this.endGame.bind(this);
         this.setDirection = this.setDirection.bind(this);
         this.removeTimers = this.removeTimers.bind(this);
@@ -120,9 +120,9 @@ class Game extends React.Component {
     }
 
     updateBoard(responsePoints) {
-        
+
         if (responsePoints !== undefined) {
-            
+            console.log(responsePoints);
             if (responsePoints.gameOver) {
                 if (responsePoints.winnerId === this.props.location.state.playerId) {
                     this.endGame(3);
@@ -130,17 +130,15 @@ class Game extends React.Component {
                     this.endGame(2);
                 }
             }
+            let newBoard = this.state.board;
             Object.values(responsePoints.playersInfo).forEach(player => {
-                    let x = player.position.x, y = player.position.y
-                    x > -1 && y > -1 && x < 50 && y < 50
-                        ? this.setState(prevState => {
-                            let newBoard = prevState.board;
-                            newBoard[x][y] = player.id + 1;
-                            return {board: newBoard}
-                        })
-                        : this.endGame(2)
+                    let x = player.position.x, y = player.position.y;
+                    if (x > -1 && y > -1 && x < 50 && y < 50) {
+                        newBoard[x][y] = player.id + 1;
+                    }
                 }
             )
+            this.setState({board: newBoard})
         }
 
     }
@@ -161,7 +159,7 @@ class Game extends React.Component {
     }
 
     render() {
-        
+
         this.numCells = Math.floor(this.state.size / 10);
         const cellSize = this.state.size / this.numCells;
         const cellIndexes = Array.from(Array(this.numCells).keys());
