@@ -20,7 +20,6 @@ function GridCell(props) {
 }
 
 
-
 let responsePoints;
 
 // the main view
@@ -45,18 +44,19 @@ class Game extends React.Component {
 
         this.sendTo = this.sendDirection.bind(this);
         this.connect = this.connect.bind(this);
-    
+
         let numCells = 50;
         let local_board = [...Array(numCells)].map(x => Array(numCells).fill(0));
-     
+
         const cellSize = 500 / numCells;
-        let i = 0, j=0;
+        let i = 0, j = 0;
         this.cells = local_board.map(x => {
-            i++; j=0;
+            i++;
+            j = 0;
             return x.map(y => {
                 j++;
                 return (
-                    <div className="game-cell" id={i+","+j}></div>
+                    <div className="game-cell" id={i + "," + j}></div>
                 )
             })
         });
@@ -66,7 +66,7 @@ class Game extends React.Component {
     //     client.unsubscribe('/topic/room/' + this.props.location.state.id);
     // }
 
-    
+
     connect() {
         var that = this;
         if (this.props.location.state.id !== null) {
@@ -133,7 +133,7 @@ class Game extends React.Component {
 
 
     updateBoard(responsePoints) {
-       if (responsePoints !== undefined) {
+        if (responsePoints !== undefined) {
             if (responsePoints.gameOver) {
                 if (responsePoints.winnerId === this.props.location.state.playerId) {
                     this.endGame(3);
@@ -143,7 +143,9 @@ class Game extends React.Component {
             }
 
             Object.values(responsePoints.playersInfo).forEach(player => {
-                    document.getElementById(player.position.x+","+player.position.y).classList.add("grid-cell--motor__"+player.id) 
+                    if (player.position.x > -1 && player.position.y > -1) {
+                        document.getElementById(player.position.x + "," + player.position.y).classList.add("grid-cell--motor__" + player.id)
+                    }
                 }
             )
         }
@@ -165,7 +167,7 @@ class Game extends React.Component {
         //if (this.movebonusTimeout) clearTimeout(this.movebonusTimeout)
     }
 
-    render() {    
+    render() {
         let overlay;
         if (this.state.status === 0) {
             overlay = (
