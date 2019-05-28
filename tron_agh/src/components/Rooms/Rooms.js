@@ -6,6 +6,7 @@ import './Rooms.css';
 
 import {Stomp} from "@stomp/stompjs";
 import SockJS from "sockjs-client"
+import ClientStateService from "../../services/ClientStateService";
 
 const socket = new SockJS('http://192.168.43.73:9999/gs-guide-websocket');
 export const client = Stomp.over(socket);
@@ -13,7 +14,6 @@ client.debug = () => {
 };
 
 const server_adress = 'http://192.168.43.73:9999';
-const myId = 1;
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -39,7 +39,7 @@ export default class Home extends React.Component {
     handlePostSubmit = event => {
         event.preventDefault();
 
-        axios.post(server_adress + `/room`, {maxPlayers: 4, creatorId: myId}, {
+        axios.post(server_adress + `/room`, {maxPlayers: 4, creatorId: ClientStateService.clientId}, {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -57,7 +57,7 @@ export default class Home extends React.Component {
 
     joinRoom = (room, event) => {
         event.preventDefault();
-        room.playersIds.push(myId);
+        room.playersIds.push(ClientStateService.clientId);
         const data = {
             maxPlayers: room.maxPlayers,
             id: room.id,
@@ -83,7 +83,7 @@ export default class Home extends React.Component {
             readyToStart: true,
             creatorId: room.creatorId
         };
-        if (room.creatorId === myId) {
+        if (room.creatorId === ClientStateService.clientId) {
             axios.put(server_adress + `/room/` + room.id, data,
                 {headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}})
                 .then(res => {
@@ -119,7 +119,7 @@ export default class Home extends React.Component {
                                 className="start__button"
                                 type="submit"
                             >
-                                {room.creatorId === myId ? 'Start Game!' : 'Join Game'}
+                                {room.creatorId === ClientStateService.clientId ? 'Start Game!' : 'Join Game'}
                             </button>
                         </form>
                     </div>
@@ -136,7 +136,7 @@ export default class Home extends React.Component {
         if (this.state.redirect) {
             return <Redirect to={{
                 pathname: '/game',
-                state: {id: this.state.redirectId, playerId: myId},
+                state: {id: this.state.redirectId, playerId: ClientStateService.clientId},
             }}/>
         }
         return (
