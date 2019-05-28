@@ -26,7 +26,7 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            size: 500,
+            size: 1000,
             board: [],
             bonus: [],
             // 0 = not started, 1 = in progress, 2 = finished
@@ -115,7 +115,7 @@ class Game extends React.Component {
     createBoard() {
         this.numCells = Math.floor(this.state.size / 10);
         this.setState(
-            {board: [...Array(this.numCells)].map(x => Array(2*this.numCells).fill(0))}
+            {board: [...Array(this.numCells)].map(x => Array(this.numCells).fill(0))}
         );
     }
 
@@ -213,7 +213,7 @@ class Game extends React.Component {
                 className="motor-app"
                 onKeyDown={this.setDirection}
                 style={{
-                    width: 2*this.state.size + "px",
+                    width: this.state.size + "px",
                     height: this.state.size + "px"
                 }}
                 ref={el => (this.el = el)}
@@ -223,7 +223,7 @@ class Game extends React.Component {
                 <div
                     className="grid"
                     style={{
-                        width: 2*this.state.size + "px",
+                        width: this.state.size + "px",
                         height: this.state.size + "px"
                     }}
                 >
