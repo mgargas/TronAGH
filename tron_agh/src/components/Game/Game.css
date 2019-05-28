@@ -31,6 +31,9 @@
   .grid-cell--bonus {
     background-color: blue;
   }
+  .grid-cell--motor__0 {
+    background-color: lightpink;
+  }
   .grid-cell--motor__1 {
     background-color: orange;
   }
@@ -44,7 +47,7 @@
     background-color: greenyellow;
   }
   .grid-cell--motor__5 {
-    background-color: purple;
+    background-color: white;
   }
   .grid-cell--motor__6 {
     background-color: blanchedalmond;

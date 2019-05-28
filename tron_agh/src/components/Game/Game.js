@@ -140,14 +140,14 @@ class Game extends React.Component {
                 } else {
                     this.endGame(2);
                 }
-            }
-
-            Object.values(responsePoints.playersInfo).forEach(player => {
-                    if (player.position.x > -1 && player.position.y > -1) {
-                        document.getElementById(player.position.x + "," + player.position.y).classList.add("grid-cell--motor__" + player.id)
+            } else {
+                Object.values(responsePoints.playersInfo).forEach(player => {
+                        if (player.position.x > -1 && player.position.y > -1) {
+                            document.getElementById(player.position.x + "," + player.position.y).classList.add("grid-cell--motor__" + (player.id%6))
+                        }
                     }
-                }
-            )
+                )
+            }
         }
 
     }
