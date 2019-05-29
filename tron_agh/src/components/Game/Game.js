@@ -69,10 +69,13 @@ class Game extends React.Component {
 
     connect() {
         var that = this;
-        if (this.props.location.state.id !== null) {
-            client.subscribe('/topic/room/' + this.props.location.state.id,
+            if (this.props.location.state.id !== null) {
+                console.log('player id = '+this.props.location.state.playerId);
+                console.log('subscribe on '+('/topic/room/' + this.props.location.state.id));
+                client.subscribe('/topic/room/' + this.props.location.state.id,
+                // TODO : why no message from server ??????
                 function (message) {
-                    //console.log(message);
+                    console.log('message = '+message);
                     if (message.body) {
                         //console.log(message);
                         //responsePoints = JSON.parse(message.body)
@@ -80,6 +83,8 @@ class Game extends React.Component {
                         responsePoints = JSON.parse(message.body)
                     }
                 });
+        } else {
+            console.log('NULL!!!????!!!')
         }
     }
 
@@ -88,6 +93,7 @@ class Game extends React.Component {
     }
 
     sendDirection(direction) {
+        console.log('direction from '+this.props.location.state.playerId+'  on room '+this.props.location.state.id);
         try {
             client.send('/app/room/' + this.props.location.state.id, {}, JSON.stringify({
                 'id': this.props.location.state.playerId,
