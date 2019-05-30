@@ -1,94 +1,96 @@
 * {
-    box-sizing: border-box;
-  }
-  
-  html, body {
-    overflow: hidden;
-    font-family: Helvetica,san-serif;
-  }
-  
-  .grid {
-    box-sizing: content-box;
-    padding: 0;
-    border-top: 1px solid lightgray;
-    border-right: 1px solid lightgray;
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  .grid-cell {
-    border-left: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
-  }
+  box-sizing: border-box;
+}
 
-  .game-cell {
-    width: 10px;
-    height: 10px;
-    border-left: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
-  }
+html, body {
+  overflow: hidden;
+  font-family: Helvetica,san-serif;
+}
 
-  .grid-cell--bonus {
-    background-color: blue;
-  }
-  .grid-cell--motor__0 {
-    background-color: lightpink;
-  }
-  .grid-cell--motor__1 {
-    background-color: orange;
-  }
-  .grid-cell--motor__2 {
-    background-color: red;
-  }
-  .grid-cell--motor__3 {
-    background-color: yellow;
-  }
-  .grid-cell--motor__4 {
-    background-color: greenyellow;
-  }
-  .grid-cell--motor__5 {
-    background-color: white;
-  }
-  .grid-cell--motor__6 {
-    background-color: blanchedalmond;
-  }
-  
-  .motor-app {
-    position: relative;
-    margin: 10px auto;
-  }
-  .motor-app:focus {
-    outline: none;
-  }
-  
-  .motor-app__overlay {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    background-color: rgba(0, 0, 0, 0.9);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 1.2rem;
-  }
-  
-  .mb-1 {
-    margin-bottom: 1rem;
-  }
-  
-  .button__game {
-    background-color: blue;
-    color: white;
-    border-radius: 3px;
-    border: 2px solid blue;
-    padding: .75rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 0 10px black;
-  }
-  
-  
+.grid {
+  box-sizing: content-box;
+  padding: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grid-cell {
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.game-cell {
+  width: 10px;
+  height: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.grid-cell--bonus {
+  background-color: blue;
+}
+.grid-cell--motor__0 {
+  background-color: lightpink;
+}
+.grid-cell--motor__1 {
+  background-color: orange;
+}
+.grid-cell--motor__2 {
+  background-color: red;
+}
+.grid-cell--motor__3 {
+  background-color: yellow;
+}
+.grid-cell--motor__4 {
+  background-color: greenyellow;
+}
+.grid-cell--motor__5 {
+  background-color: white;
+}
+.grid-cell--motor__6 {
+  background-color: blanchedalmond;
+}
+
+.motor-app {
+  width: 1000px;
+  height: 500px;
+  background: url('/images/game_background.png');
+  position: relative;
+  margin: 10px auto;
+}
+.motor-app:focus {
+  outline: none;
+}
+
+.motor-app__overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.button__game {
+  background-color: blue;
+  color: white;
+  border-radius: 3px;
+  border: 2px solid blue;
+  padding: .75rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px black;
+}
+

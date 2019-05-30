@@ -46,7 +46,7 @@ class Game extends React.Component {
         this.connect = this.connect.bind(this);
 
         let numCells = 50;
-        let local_board = [...Array(numCells)].map(x => Array(numCells).fill(0));
+        let local_board = [...Array(numCells)].map(x => Array(2*numCells).fill(0));
 
         const cellSize = 500 / numCells;
         let i = 0, j = 0;
@@ -208,7 +208,7 @@ class Game extends React.Component {
                 className="motor-app"
                 onKeyDown={this.setDirection}
                 style={{
-                    width: this.state.size + "px",
+                    width: 2*this.state.size + "px",
                     height: this.state.size + "px"
                 }}
                 ref={el => (this.el = el)}
@@ -218,7 +218,7 @@ class Game extends React.Component {
                 <div
                     className="grid"
                     style={{
-                        width: this.state.size + "px",
+                        width: 2*this.state.size + "px",
                         height: this.state.size + "px"
                     }}
                 >

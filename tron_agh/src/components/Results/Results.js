@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import './Results.css';
 
-const host = 'http://192.168.43.218:9999';
+const host = 'http://127.0.0.1:9999';
 export default class Results extends Component {
 
     constructor(props) {
