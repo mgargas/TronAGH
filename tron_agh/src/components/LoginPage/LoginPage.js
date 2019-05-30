@@ -3,10 +3,10 @@ import axios from 'axios';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import './LoginPage.css';
-import ClientStateService from "../../services/ClientStateService";
+//import ClientStateService from "../../services/ClientStateService";
 
 
-const host = 'http://192.168.43.218:9999';
+const host = 'http://127.0.0.1:9999';
 export default class LoginPage extends React.Component {
 
     constructor(props) {
@@ -39,9 +39,9 @@ export default class LoginPage extends React.Component {
         console.log('result = '+JSON.stringify(response));
         this.setError(null);
         if(response.data) {
-            ClientStateService.clientId = response.data.playerId;
-            ClientStateService.clientName = this.state.login;
-            ClientStateService.clientPasswordHash = this.hashString(this.state.password);
+            localStorage.setItem('clientId', response.data.playerId); //ClientStateService.clientId = response.data.playerId;
+            localStorage.setItem('clientName', this.state.login); //ClientStateService.clientName = this.state.login;
+            localStorage.setItem('clientPasswordHash', this.hashString(this.state.password)); //ClientStateService.clientPasswordHash = this.hashString(this.state.password);
             this.props.history.push("/home");
         } else {
             this.setError("Wrong login/password or You don't have an account");

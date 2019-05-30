@@ -56,7 +56,7 @@ class Game extends React.Component {
             return x.map(y => {
                 j++;
                 return (
-                    <div className="game-cell" id={i + "," + j}></div>
+                    <div className="game-cell" key={i + "," + j} id={i + "," + j}></div>
                 )
             })
         });
@@ -134,6 +134,7 @@ class Game extends React.Component {
 
     updateBoard(responsePoints) {
         if (responsePoints !== undefined) {
+            console.log(responsePoints);
             if (responsePoints.gameOver) {
                 if (responsePoints.winnerId === this.props.location.state.playerId) {
                     this.endGame(3);
@@ -142,7 +143,7 @@ class Game extends React.Component {
                 }
             } else {
                 Object.values(responsePoints.playersInfo).forEach(player => {
-                        if (player.position.x > -1 && player.position.y > -1) {
+                        if (player.position.x > -1 && player.position.y > -1 && document.getElementById(player.position.x + "," + player.position.y)) {
                             document.getElementById(player.position.x + "," + player.position.y).classList.add("grid-cell--motor__" + (player.id%6))
                         }
                     }
