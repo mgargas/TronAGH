@@ -1,3 +1,6 @@
+body, html {
+  overflow: auto !important;
+}
 .App {
   background-color: #282c34;
   display: flex;
