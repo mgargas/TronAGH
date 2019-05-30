@@ -149,8 +149,8 @@ class Game extends React.Component {
                 }
             } else {
                 Object.values(responsePoints.playersInfo).forEach(player => {
-                        if (player.position.x > -1 && player.position.y > -1 && document.getElementById(player.position.x + "," + player.position.y)) {
-                            document.getElementById(player.position.x + "," + player.position.y).classList.add("grid-cell--motor__" + (player.id%6))
+                        if (player.position.x > -1 && player.position.y > -1 && document.getElementById(Number(player.position.x+1) + "," + player.position.y)) {
+                            document.getElementById(Number(player.position.x+1) + "," + Number(player.position.y)).classList.add("grid-cell--motor__" + (player.id%6))
                         }
                     }
                 )

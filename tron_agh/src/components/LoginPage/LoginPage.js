@@ -39,6 +39,7 @@ export default class LoginPage extends React.Component {
         console.log('result = '+JSON.stringify(response));
         this.setError(null);
         if(response.data) {
+            sessionStorage.clear();
             localStorage.setItem('clientId', response.data.playerId); //ClientStateService.clientId = response.data.playerId;
             localStorage.setItem('clientName', this.state.login); //ClientStateService.clientName = this.state.login;
             localStorage.setItem('clientPasswordHash', this.hashString(this.state.password)); //ClientStateService.clientPasswordHash = this.hashString(this.state.password);

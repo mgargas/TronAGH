@@ -73,6 +73,9 @@ export default class Home extends React.Component {
             .then(res => {
                 this.setState({rooms: res.data});
             })
+            .then(res => {
+                this.handleRefresh()
+            })
     };
 
     startGame = (room, event) => {
