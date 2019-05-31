@@ -19,9 +19,10 @@ body, html {
 }
 button {
   color: #fff;
-  background-color: #00c8d5;
+  border: 1px solid #fff;
+  background-color: #282c34;
   border-radius: 3px;
-  border: 1px solid #00c8d5;
+  border: 1px solid #282c34;
   cursor: pointer;
   padding: .75rem;
   margin-bottom: 0.5rem;

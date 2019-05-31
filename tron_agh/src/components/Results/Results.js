@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import axios from 'axios';
 
 import './Results.css';
+import {API_BASE_URL} from '../constants/constants';
 
-const host = 'http://192.168.1.104:9999';
+const host = API_BASE_URL;
 export default class Results extends Component {
 
     constructor(props) {

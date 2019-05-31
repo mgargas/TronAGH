@@ -23,20 +23,22 @@
 .Login .buttons-panel button {
     margin-top: 20px;
     color: #fff;
-    background-color: #00c8d5;
+    background-color: #282c34;
     border-radius: 3px;
-    border: 1px solid #00c8d5;
+    border: 1px solid #282c34;
     cursor: pointer;
     padding: .75rem;
     margin-bottom: 0.5rem;
 }
 
 .Login .buttons-panel .login-button {
+    border: 1px solid #fff;
     float: left;
     position: relative;
 }
 
 .Login .buttons-panel .register-button {
+    border: 1px solid #fff;
     float: right;
     position: relative;
 }

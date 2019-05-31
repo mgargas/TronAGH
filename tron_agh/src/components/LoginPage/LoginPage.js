@@ -4,9 +4,9 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import './LoginPage.css';
 //import ClientStateService from "../../services/ClientStateService";
+import {API_BASE_URL} from '../constants/constants';
 
-
-const host = 'http://192.168.1.104:9999';
+const host = API_BASE_URL;
 export default class LoginPage extends React.Component {
 
     constructor(props) {

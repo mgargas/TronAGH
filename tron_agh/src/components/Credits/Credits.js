@@ -20,7 +20,7 @@ export default class Home extends React.Component {
                     <li>Jan Liberacki</li>
                     <li>Kamil Borowiec</li>
                 </ul>
-                <h3>Backend serwowali:</h3>
+                <h3>Backend serw(er)owali:</h3>
                 <ul>
                     <li>Rafal Cegielski</li>
                     <li>Marek Gargas</li>

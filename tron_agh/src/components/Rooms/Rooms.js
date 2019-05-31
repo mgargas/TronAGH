@@ -6,16 +6,17 @@ import './Rooms.css';
 
 import {Stomp} from "@stomp/stompjs";
 import SockJS from "sockjs-client"
+import {API_BASE_URL} from '../constants/constants';
 //import ClientStateService from "../../services/ClientStateService";
 
 const clientId = Number(localStorage.getItem('clientId'))
 
-const socket = new SockJS('http://192.168.1.104:9999/gs-guide-websocket');
+const socket = new SockJS(API_BASE_URL + '/gs-guide-websocket');
 export const client = Stomp.over(socket);
 client.debug = () => {
 };
 
-const server_adress = 'http://192.168.1.104:9999';
+const server_adress = API_BASE_URL;
 
 export default class Home extends React.Component {
     constructor(props) {
