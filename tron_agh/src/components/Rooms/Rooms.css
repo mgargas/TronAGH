@@ -1,11 +1,25 @@
 .room__item{
-    min-width: 200px;
+  width: 100%;
     padding: 20px 40px;
     margin: 20px 0 ;
     border: 1px solid #fff;
-    text-align: center; 
+    text-align: center;
     color: #fff;
+    display: flex;
+    align-items: baseline;
   }
   .create__button{
+    margin-top: 10px;
     width: 100%;
+    border: 1px solid #fff;
   }
+
+.join__button{
+  margin: 0 0 -6px 20px;
+  border: 1px solid #fff;
+}
+
+.start__button{
+  margin: 0 0 -6px 10px;
+  border: 1px solid #fff;
+}

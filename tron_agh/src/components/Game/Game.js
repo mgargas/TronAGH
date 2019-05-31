@@ -2,19 +2,14 @@ import React from 'react';
 
 import './Game.css';
 
-import axios from 'axios';
-
-import {Stomp} from "@stomp/stompjs";
-import SockJS from "sockjs-client"
-
-const socket = new SockJS('http://localhost:9999/gs-guide-websocket');
-const client = Stomp.over(socket);
+import {withRouter} from "react-router-dom";
+import {client} from "../Rooms/Rooms";
 
 // display a single cell
 function GridCell(props) {
     const classes = `grid-cell 
   ${props.bonusCell ? "grid-cell--bonus" : ""} 
-  ${props.motorCell ? "grid-cell--motor__"+props.motorCell : ""}
+  ${props.motorCell ? "grid-cell--motor__" + props.motorCell : ""}
   `;
     return (
         <div
@@ -24,25 +19,24 @@ function GridCell(props) {
     );
 }
 
+
 let responsePoints;
 
 // the main view
-export default class Game extends React.Component {
+class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             size: 500,
             board: [],
             bonus: [],
-            responsePoints: [],
             // 0 = not started, 1 = in progress, 2 = finished
             status: 0,
             // using keycodes to indicate direction
-            direction: 39
+            direction: 39,
         };
 
 
-        this.startGame = this.startGame.bind(this);
         this.endGame = this.endGame.bind(this);
         this.setDirection = this.setDirection.bind(this);
         this.removeTimers = this.removeTimers.bind(this);
@@ -50,45 +44,75 @@ export default class Game extends React.Component {
 
         this.sendTo = this.sendDirection.bind(this);
         this.connect = this.connect.bind(this);
+
+        let numCells = 50;
+        let local_board = [...Array(numCells)].map(x => Array(2*numCells).fill(0));
+
+        const cellSize = 500 / numCells;
+        let i = 0, j = 0;
+        this.cells = local_board.map(x => {
+            i++;
+            j = 0;
+            return x.map(y => {
+                j++;
+                return (
+                    <div className="game-cell" key={i + "," + j} id={i + "," + j}></div>
+                )
+            })
+        });
     }
 
+    // componentWillUnmount() {
+    //     client.unsubscribe('/topic/room/' + this.props.location.state.id);
+    // }
+
+
     connect() {
-        console.log('connect method')
-        client.connect({},
-            function (frame) {
-                console.log('CONNECTED!');
-                client.subscribe('/topic/room/0', 
-                    function(message) {
+        var that = this;
+            if (this.props.location.state.id !== null) {
+                console.log('player id = '+this.props.location.state.playerId);
+                console.log('subscribe on '+('/topic/room/' + this.props.location.state.id));
+                client.subscribe('/topic/room/' + this.props.location.state.id,
+                // TODO : why no message from server ??????
+                function (message) {
+                    console.log('message = '+message);
                     if (message.body) {
+                        //console.log(message);
+                        //responsePoints = JSON.parse(message.body)
+                        that.updateBoard(JSON.parse(message.body));
                         responsePoints = JSON.parse(message.body)
                     }
-                  });
-            });
+                });
+        } else {
+            console.log('NULL!!!????!!!')
+        }
     }
 
     disconnect() {
-        if (client !== null) {
-            client.disconnect();
-        }
-        console.log("Disconnected");
+        client.unsubscribe();
     }
 
     sendDirection(direction) {
+        console.log('direction from '+this.props.location.state.playerId+'  on room '+this.props.location.state.id);
         try {
-            client.send("/app/room/0", {}, JSON.stringify({'id': 0, 'turn': direction}));
-        } catch(e) {
+            client.send('/app/room/' + this.props.location.state.id, {}, JSON.stringify({
+                'id': this.props.location.state.playerId,
+                'turn': direction
+            }));
+        } catch (e) {
             console.error(e);
             alert('cannot send message on /app/room/0');
         }
     }
 
-    componentWillMount(){
- 
-    }
-
     componentDidMount() {
-        this.createBoard();
         this.connect();
+        //this.createBoard();
+        //this.removeTimers();
+        //this.movemotorInterval = setInterval(this.updateBoard, 30);
+        //need to focus so keydown listener will work!
+        this.el.focus();
+        this.setState({status: 1});
     }
 
 
@@ -100,8 +124,8 @@ export default class Game extends React.Component {
             }
         });
 
-        if (changeDirection){ 
-            switch(keyCode) {
+        if (changeDirection) {
+            switch (keyCode) {
                 case 39:
                     this.sendDirection(1);
                     break;
@@ -113,108 +137,78 @@ export default class Game extends React.Component {
 
     }
 
-    createBoard() {
-        this.numCells = Math.floor(this.state.size / 10);
-        this.setState(
-            {board: [...Array(this.numCells)].map(x => Array(this.numCells).fill(0))}
-        );
-    }
 
-    updateBoard() {
-        if(this.state.board.length > 30) {
-            if(responsePoints !== undefined) {
-                console.log(responsePoints.playersInfo)
-                Object.values(responsePoints.playersInfo).forEach(player =>
-                    {
-                    let x = player.position.x, y = player.position.y
-                    x > -1 && y > -1 
-                    ? this.setState(prevState => {
-                        let newBoard = prevState.board;
-                        newBoard[x][y] = player.id+1;
-                        return {board: newBoard}
-                    }) 
-                    : this.endGame()
+    updateBoard(responsePoints) {
+        if (responsePoints !== undefined) {
+            console.log(responsePoints);
+            if (responsePoints.gameOver) {
+                if (responsePoints.winnerId === this.props.location.state.playerId) {
+                    this.endGame(3);
+                } else {
+                    this.endGame(2);
+                }
+            } else {
+                Object.values(responsePoints.playersInfo).forEach(player => {
+                        if (player.position.x > -1 && player.position.y > -1 && document.getElementById(Number(player.position.x+1) + "," + player.position.y)) {
+                            document.getElementById(Number(player.position.x+1) + "," + Number(player.position.y)).classList.add("grid-cell--motor__" + (player.id%6))
+                        }
                     }
                 )
             }
-
-
         }
-        
+
     }
 
-    startGame() {
-        this.removeTimers();
-        this.movemotorInterval = setInterval(this.updateBoard, 130);
-
-
-        this.setState({
-            status: 1,
-        });
-        //need to focus so keydown listener will work!
-        this.el.focus();
-    }
-
-    endGame() {
-        this.removeTimers();
-        this.setState({
-            status: 2
-        })
+    endGame(gameStatus) {
+        client.unsubscribe();
+        if (gameStatus) {
+            this.removeTimers();
+            this.setState({
+                status: gameStatus,
+            });
+        }
     }
 
     removeTimers() {
-        if (this.movemotorInterval) clearInterval(this.movemotorInterval);
-        if (this.movebonusTimeout) clearTimeout(this.movebonusTimeout)
-    }
-
-    componentWillUnmount() {
-        this.removeTimers();
+        //if (this.movemotorInterval) clearInterval(this.movemotorInterval);
+        //if (this.movebonusTimeout) clearTimeout(this.movebonusTimeout)
     }
 
     render() {
-        this.numCells = Math.floor(this.state.size / 10);
-        const cellSize = this.state.size / this.numCells;
-        const cellIndexes = Array.from(Array(this.numCells).keys());
-        let key = 0;
-
-        const cells = this.state.board.map(x => {
-            return x.map(y => {
-                key++;
-                return (
-             
-                    <GridCell
-                        bonusCell={false}
-                        motorCell={y}
-                        size={cellSize}
-                        key={key}
-                    />
-     
-           
-                )
-            })
-        });
         let overlay;
         if (this.state.status === 0) {
             overlay = (
                 <div className="motor-app__overlay">
-                    <button onClick={this.startGame}>Start game!</button>
+                    <button className="button__game" onClick={this.startGame}>Start game!</button>
                 </div>
             );
         } else if (this.state.status === 2) {
             overlay = (
                 <div className="motor-app__overlay">
                     <div className="mb-1"><b>GAME OVER!</b></div>
-                    <div className="mb-1">Your score: {this.state.board.length} </div>
-                    <button onClick={this.startGame}>Start a new game</button>
+                    {/*<div className="mb-1">Your score: {Infinity} </div>*/}
                 </div>
             );
+            setTimeout(() => {
+                this.props.history.push(`/rooms`);
+            }, 3000);
+        } else if (this.state.status === 3) {
+            overlay = (
+                <div className="motor-app__overlay">
+                    <div className="mb-1"><b>You Won!</b></div>
+                    {/*<div className="mb-1">Your score: {Infinity} </div>*/}
+                </div>
+            );
+            setTimeout(() => {
+                this.props.history.push(`/rooms`);
+            }, 3000);
         }
         return (
             <div
                 className="motor-app"
                 onKeyDown={this.setDirection}
                 style={{
-                    width: this.state.size + "px",
+                    width: 2*this.state.size + "px",
                     height: this.state.size + "px"
                 }}
                 ref={el => (this.el = el)}
@@ -224,14 +218,15 @@ export default class Game extends React.Component {
                 <div
                     className="grid"
                     style={{
-                        width: this.state.size + "px",
+                        width: 2*this.state.size + "px",
                         height: this.state.size + "px"
                     }}
                 >
-                    {cells}
+                    {this.cells}
                 </div>
             </div>
         );
     }
 }
 
+export default withRouter(Game);

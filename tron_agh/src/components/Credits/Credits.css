@@ -1,0 +1,31 @@
+@font-face {
+    font-family: "arcade";
+    src: url("../fonts/arcade.ttf");
+}
+
+.credits__list{
+    text-align: center;
+    color: #fff;
+}
+
+.credits__list ul {
+    margin: 0;
+    padding: 0;
+}
+
+.credits__list ul li {
+    font-size: 24px;
+}
+
+.credits__list h1{
+    font-size: 36px;
+}
+
+.credits__list h3{
+    font-size: 28px;
+}
+
+h1, h3, li {
+    font-family: 'arcade';
+    list-style-type: none;
+}

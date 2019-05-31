@@ -1,0 +1,45 @@
+tr  {
+    font-family: 'arcade';
+    font-size: 40px;
+}
+
+.results-table {
+    width: 720px;
+}
+
+table {
+    width: 100%;
+}
+
+td.name {
+    color: white;
+    width: 75%;
+}
+
+td.wins {
+    width: 25%;
+    text-align: right;
+    color: white;
+}
+
+
+.back-button{
+    border: 1px solid #fff;
+}
+button {
+    color: #fff;
+    border: 1px solid #fff;
+    background-color: #282c34;
+    border-radius: 3px;
+    border: 1px solid #282c34;
+    cursor: pointer;
+    padding: .75rem;
+    margin-bottom: 0.5rem;
+    float: right;
+    margin-top: 50px;
+}
+
+@font-face {
+    font-family: "arcade";
+    src: url("../fonts/arcade.ttf");
+}
