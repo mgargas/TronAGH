@@ -10,12 +10,12 @@ import SockJS from "sockjs-client"
 
 const clientId = Number(localStorage.getItem('clientId'))
 
-const socket = new SockJS('http://127.0.0.1:9999/gs-guide-websocket');
+const socket = new SockJS('http://192.168.1.104:9999/gs-guide-websocket');
 export const client = Stomp.over(socket);
 client.debug = () => {
 };
 
-const server_adress = 'http://127.0.0.1:9999';
+const server_adress = 'http://192.168.1.104:9999';
 
 export default class Home extends React.Component {
     constructor(props) {
@@ -154,6 +154,11 @@ export default class Home extends React.Component {
                 <form onSubmit={this.handleRefresh}>
                     <button className="create__button" type="submit">Refresh</button>
                 </form>
+                <button className="create__button" type="submit">
+                    <Link to="/results">
+                        Results
+                    </Link>
+                </button>
             </div>
 
         )
